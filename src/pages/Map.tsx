@@ -79,7 +79,7 @@ const Map = () => {
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Events Map</h1>
         </div>
-        <div className="h-[600px] w-full rounded-lg overflow-hidden">
+        <div className="h-[calc(100vh-12rem)] w-full rounded-lg overflow-hidden border border-border shadow-lg">
           <MapComponent events={dummyEvents} />
         </div>
       </div>
