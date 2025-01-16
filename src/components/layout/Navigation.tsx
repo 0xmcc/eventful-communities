@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { MapPin, Calendar, Users, PlusCircle } from "lucide-react";
+import { MapPin, Users, PlusCircle } from "lucide-react";
 
 const Navigation = () => {
   const location = useLocation();
@@ -8,7 +8,6 @@ const Navigation = () => {
 
   const tabs = [
     { icon: MapPin, label: "Map", path: "/map" },
-    { icon: Calendar, label: "Events", path: "/events" },
     { icon: Users, label: "Communities", path: "/communities" },
     { icon: PlusCircle, label: "Create", path: "/create-event" },
   ];
