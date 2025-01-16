@@ -1,10 +1,14 @@
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { AuthError } from '@supabase/supabase-js';
+import { AuthError, User } from '@supabase/supabase-js';
 
 interface AuthResponse {
   success: boolean;
   error: string | null;
+  data?: {
+    user: User | null;
+    session?: any;
+  } | null;
 }
 
 export function useAuth() {
@@ -118,12 +122,12 @@ export function useAuth() {
       if (error) throw error;
 
       console.log('Sign in successful:', data);
-      return { success: true, error: null };
+      return { success: true, error: null, data };
     } catch (err) {
       console.error('Email Sign In Error:', err);
       const errorMessage = err instanceof Error ? err.message : 'Failed to sign in';
       setError(errorMessage);
-      return { success: false, error: errorMessage };
+      return { success: false, error: errorMessage, data: null };
     } finally {
       setIsLoading(false);
       console.groupEnd();
@@ -144,12 +148,12 @@ export function useAuth() {
       if (error) throw error;
 
       console.log('Sign up successful:', data);
-      return { success: true, error: null };
+      return { success: true, error: null, data };
     } catch (err) {
       console.error('Sign Up Error:', err);
       const errorMessage = err instanceof Error ? err.message : 'Failed to sign up';
       setError(errorMessage);
-      return { success: false, error: errorMessage };
+      return { success: false, error: errorMessage, data: null };
     } finally {
       setIsLoading(false);
       console.groupEnd();
