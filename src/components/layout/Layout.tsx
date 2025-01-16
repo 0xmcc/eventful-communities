@@ -1,78 +1,19 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import Navigation from "./Navigation";
 import TopNavigation from "./TopNavigation";
 import { PhoneAuthDialog } from "../auth/PhoneAuthDialog";
 import { EmailAuthDialog } from "../auth/EmailAuthDialog";
-import { supabase } from "@/integrations/supabase/client";
 import HeaderActions from "./HeaderActions";
+import { useAuthCheck } from "@/hooks/useAuthCheck";
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
 const Layout = ({ children }: LayoutProps) => {
-  const navigate = useNavigate();
   const [isPhoneAuthDialogOpen, setIsPhoneAuthDialogOpen] = useState(false);
   const [isEmailAuthDialogOpen, setIsEmailAuthDialogOpen] = useState(false);
-  const [userProfile, setUserProfile] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const fetchProfile = async (userId: string) => {
-    try {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_id', userId)
-        .single();
-      
-      if (profile) {
-        setUserProfile(profile);
-      } else {
-        navigate('/onboarding');
-      }
-    } catch (error) {
-      console.error('Error fetching profile:', error);
-      setUserProfile(null);
-    }
-  };
-
-  useEffect(() => {
-    const checkUser = async () => {
-      try {
-        setIsLoading(true);
-        const { data: { user } } = await supabase.auth.getUser();
-        
-        if (user) {
-          await fetchProfile(user.id);
-        } else {
-          setUserProfile(null);
-        }
-      } catch (error) {
-        console.error('Error checking user:', error);
-        setUserProfile(null);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    checkUser();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('Auth state changed:', event, session?.user?.id);
-      
-      if (event === 'SIGNED_IN' && session?.user) {
-        await fetchProfile(session.user.id);
-      } else if (event === 'SIGNED_OUT') {
-        setUserProfile(null);
-        navigate('/');
-      }
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [navigate]);
+  const { userProfile, isLoading } = useAuthCheck();
 
   return (
     <div className="min-h-screen bg-background">
