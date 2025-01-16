@@ -1,23 +1,14 @@
-import { useQuery } from "@tanstack/react-query";
 import Layout from "@/components/layout/Layout";
-import MapComponent from "@/components/map/MapComponent";
-import { supabase } from "@/integrations/supabase/client";
-import { Tables } from "@/integrations/supabase/types";
+import GoogleMapComponent from "@/components/map/GoogleMapComponent";
+import { Database } from "@/integrations/supabase/types";
+import { useEffect } from "react";
+
+type Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row'];
 
 const Map = () => {
-  const { data: events, isLoading } = useQuery({
-    queryKey: ["events"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("events")
-        .select("*")
-        .order("start_time", { ascending: true });
-
-      if (error) throw error;
-      return data as Tables<"events">[];
-    },
-  });
-
+  useEffect(() => {
+    console.log("Map component mounted");
+  }, []);
   // Dummy data for development
   const dummyEvents: Tables<"events">[] = [
     {
@@ -73,15 +64,12 @@ const Map = () => {
     },
   ];
 
+  console.log("Map rendering with events:", dummyEvents.length);
+
   return (
     <Layout>
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Events Map</h1>
-        </div>
-        <div className="h-[calc(100vh-12rem)] w-full rounded-lg overflow-hidden border border-border shadow-lg">
-          <MapComponent events={dummyEvents} />
-        </div>
+      <div className="flex flex-col h-screen">
+        <GoogleMapComponent events={dummyEvents} />
       </div>
     </Layout>
   );

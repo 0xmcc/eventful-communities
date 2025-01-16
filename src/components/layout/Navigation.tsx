@@ -7,7 +7,7 @@ const Navigation = () => {
   const [activeTab, setActiveTab] = useState(location.pathname);
 
   const tabs = [
-    { icon: MapPin, label: "Map", path: "/" },
+    { icon: MapPin, label: "Map", path: "/map" },
     { icon: Calendar, label: "Events", path: "/events" },
     { icon: Users, label: "Communities", path: "/communities" },
     { icon: PlusCircle, label: "Create", path: "/create-event" },
