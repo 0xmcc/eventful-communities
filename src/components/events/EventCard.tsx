@@ -2,9 +2,12 @@ import { Card } from "@/components/ui/card";
 import { Calendar, MapPin } from "lucide-react";
 import { format } from "date-fns";
 import { Tables } from "@/integrations/supabase/types";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface EventCardProps {
-  event: Tables<"events">;
+  event: Tables<"events"> & {
+    creator: Tables<"profiles">
+  };
 }
 
 const EventCard = ({ event }: EventCardProps) => {
@@ -25,11 +28,16 @@ const EventCard = ({ event }: EventCardProps) => {
             {event.name}
           </h3>
 
-          {/* Host Info - Using creator_id to show "Host" text for now */}
+          {/* Host Info */}
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-full bg-primary/20" />
+            <Avatar className="w-6 h-6">
+              <AvatarImage src={event.creator.avatar_url || undefined} />
+              <AvatarFallback>
+                {event.creator.full_name?.charAt(0) || event.creator.username?.charAt(0)}
+              </AvatarFallback>
+            </Avatar>
             <span className="text-sm text-secondary-foreground/80">
-              Host {event.creator_id.substring(0, 8)}
+              {event.creator.full_name || event.creator.username}
             </span>
           </div>
 
