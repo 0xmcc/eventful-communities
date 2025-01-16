@@ -19,6 +19,7 @@ export function EmailAuthDialog({ isOpen, onClose }: EmailAuthDialogProps) {
   const [isSignUp, setIsSignUp] = useState(false);
   const { signInWithEmail, signUp, isLoading, error } = useAuth();
 
+  // Reset form when dialog closes
   useEffect(() => {
     if (!isOpen) {
       setEmail('');
@@ -27,19 +28,41 @@ export function EmailAuthDialog({ isOpen, onClose }: EmailAuthDialogProps) {
     }
   }, [isOpen]);
 
+  // Add timeout for loading state
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    
+    if (isLoading) {
+      timeoutId = setTimeout(() => {
+        toast.error('Request timed out. Please try again.');
+        onClose();
+      }, 10000); // 10 second timeout
+    }
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, [isLoading, onClose]);
+
   const createProfile = async (userId: string) => {
+    console.log('Creating profile for user:', userId);
     try {
       const { error } = await supabase
         .from('profiles')
         .insert({
           user_id: userId,
-          username: email // Use email as initial username
+          username: email
         });
       
-      if (error) throw error;
+      if (error) {
+        console.error('Profile creation error:', error);
+        throw error;
+      }
+      console.log('Profile created successfully');
     } catch (error: any) {
       console.error('Error creating profile:', error);
       toast.error('Failed to create profile');
+      throw error;
     }
   };
 
@@ -49,36 +72,44 @@ export function EmailAuthDialog({ isOpen, onClose }: EmailAuthDialogProps) {
       return;
     }
 
-    const result = isSignUp 
-      ? await signUp(email, password)
-      : await signInWithEmail(email, password);
-    
-    if (result.success) {
-      if (isSignUp) {
-        // Create profile after successful signup
-        await createProfile(result.data.user.id);
-        toast.success('Account created successfully!');
-        onClose();
-        navigate('/onboarding');
-      } else {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select()
-          .eq('user_id', result.data.user.id)
-          .maybeSingle();
-
-        toast.success('Signed in successfully!');
-        onClose();
-        
-        // If no profile exists or profile is incomplete, redirect to onboarding
-        if (!profile || !profile.full_name) {
+    try {
+      console.log(`Attempting to ${isSignUp ? 'sign up' : 'sign in'} with email`);
+      const result = isSignUp 
+        ? await signUp(email, password)
+        : await signInWithEmail(email, password);
+      
+      if (result.success) {
+        console.log('Authentication successful:', result.data);
+        if (isSignUp) {
+          await createProfile(result.data.user.id);
+          toast.success('Account created successfully!');
+          onClose();
           navigate('/onboarding');
         } else {
-          navigate('/events');
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select()
+            .eq('user_id', result.data.user.id)
+            .maybeSingle();
+
+          console.log('Retrieved profile:', profile);
+          toast.success('Signed in successfully!');
+          onClose();
+          
+          if (!profile || !profile.full_name) {
+            navigate('/onboarding');
+          } else {
+            navigate('/events');
+          }
         }
+      } else {
+        console.error('Authentication error:', result.error);
+        toast.error(result.error || 'Authentication failed');
       }
-    } else {
-      toast.error(result.error || 'Authentication failed');
+    } catch (err) {
+      console.error('Unexpected error during authentication:', err);
+      toast.error('An unexpected error occurred. Please try again.');
+      onClose();
     }
   };
 

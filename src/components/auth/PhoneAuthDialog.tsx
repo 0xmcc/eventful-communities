@@ -32,14 +32,26 @@ export function PhoneAuthDialog({ isOpen, onClose }: PhoneAuthDialogProps) {
     if (!isOpen) {
       setShowOtpInput(false);
       setOtp('');
-      handlePhoneChange(''); // Reset phone number
-      setCountryCode('1'); // Reset to default country code
+      handlePhoneChange('');
+      setCountryCode('1');
     }
   }, [isOpen]);
 
-  const handleClose = () => {
-    onClose();
-  };
+  // Add timeout for loading state
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    
+    if (isLoading) {
+      timeoutId = setTimeout(() => {
+        toast.error('Request timed out. Please try again.');
+        onClose();
+      }, 10000); // 10 second timeout
+    }
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, [isLoading, onClose]);
 
   const handleSendOTP = async () => {
     if (!isValid) {
@@ -47,24 +59,40 @@ export function PhoneAuthDialog({ isOpen, onClose }: PhoneAuthDialogProps) {
       return;
     }
 
-    const result = await signInWithPhone(formattedE164);
-    
-    if (result.success) {
-      setShowOtpInput(true);
-      toast.success('OTP sent successfully!');
-    } else {
-      toast.error(result.error || 'Failed to send OTP');
+    try {
+      console.log('Attempting to send OTP to:', formattedE164);
+      const result = await signInWithPhone(formattedE164);
+      
+      if (result.success) {
+        setShowOtpInput(true);
+        toast.success('OTP sent successfully!');
+      } else {
+        console.error('Failed to send OTP:', result.error);
+        toast.error(result.error || 'Failed to send OTP');
+      }
+    } catch (err) {
+      console.error('Unexpected error sending OTP:', err);
+      toast.error('An unexpected error occurred. Please try again.');
+      onClose();
     }
   };
 
   const handleVerifyOTP = async () => {
-    const result = await verifyOTP(formattedE164, otp);
-    
-    if (result.success) {
-      toast.success('Successfully authenticated!');
+    try {
+      console.log('Attempting to verify OTP for:', formattedE164);
+      const result = await verifyOTP(formattedE164, otp);
+      
+      if (result.success) {
+        toast.success('Successfully authenticated!');
+        onClose();
+      } else {
+        console.error('Failed to verify OTP:', result.error);
+        toast.error(result.error || 'Failed to verify OTP');
+      }
+    } catch (err) {
+      console.error('Unexpected error verifying OTP:', err);
+      toast.error('An unexpected error occurred. Please try again.');
       onClose();
-    } else {
-      toast.error(result.error || 'Failed to verify OTP');
     }
   };
 
@@ -137,4 +165,4 @@ export function PhoneAuthDialog({ isOpen, onClose }: PhoneAuthDialogProps) {
       </DialogContent>
     </Dialog>
   );
-} 
+}
