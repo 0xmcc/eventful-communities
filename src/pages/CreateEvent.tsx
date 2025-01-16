@@ -127,6 +127,10 @@ const CreateEvent = () => {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-8">
+              <EventCoverImage
+                onImageChange={(file) => setCoverImage(file)}
+              />
+              
               <EventBasicInfo
                 name={formData.name}
                 description={formData.description}
@@ -159,10 +163,6 @@ const CreateEvent = () => {
                     longitude: lng,
                   }))
                 }
-              />
-
-              <EventCoverImage
-                onImageChange={(file) => setCoverImage(file)}
               />
 
               <Button
