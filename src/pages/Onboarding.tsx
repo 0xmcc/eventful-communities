@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,7 @@ const Onboarding = () => {
   const [user, setUser] = useState<any>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -36,6 +37,10 @@ const Onboarding = () => {
       }
     };
   }, [previewUrl]);
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -154,18 +159,25 @@ const Onboarding = () => {
                 <div>
                   <label className="block text-sm font-medium mb-2">Profile Picture</label>
                   <div className="flex flex-col items-center space-y-4">
-                    <Avatar className="w-24 h-24">
+                    <Avatar 
+                      className="w-24 h-24 cursor-pointer hover:opacity-80 transition-opacity"
+                      onClick={handleAvatarClick}
+                    >
                       <AvatarImage src={previewUrl} />
                       <AvatarFallback>
                         {user?.email?.charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
-                    <Input
+                    <input
+                      ref={fileInputRef}
                       type="file"
                       accept="image/*"
                       onChange={handleFileSelect}
-                      className="w-full"
+                      className="hidden"
                     />
+                    <p className="text-sm text-muted-foreground">
+                      Click the circle to upload a profile picture
+                    </p>
                   </div>
                 </div>
                 <div className="flex space-x-3">
