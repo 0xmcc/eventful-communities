@@ -1,11 +1,10 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { NameStep } from "@/components/onboarding/NameStep";
+import { PhotoStep } from "@/components/onboarding/PhotoStep";
 
 const Onboarding = () => {
   const navigate = useNavigate();
@@ -15,7 +14,6 @@ const Onboarding = () => {
   const [user, setUser] = useState<any>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>("");
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -38,22 +36,15 @@ const Onboarding = () => {
     };
   }, [previewUrl]);
 
-  const handleAvatarClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      // Cleanup previous preview URL if it exists
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl);
-      }
-      
-      setSelectedFile(file);
-      const objectUrl = URL.createObjectURL(file);
-      setPreviewUrl(objectUrl);
+  const handleFileSelect = (file: File) => {
+    // Cleanup previous preview URL if it exists
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
     }
+    
+    setSelectedFile(file);
+    const objectUrl = URL.createObjectURL(file);
+    setPreviewUrl(objectUrl);
   };
 
   const uploadAvatar = async (file: File): Promise<string> => {
@@ -135,69 +126,20 @@ const Onboarding = () => {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             {step === 1 ? (
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">Full Name</label>
-                  <Input
-                    type="text"
-                    placeholder="Enter your full name"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    required
-                  />
-                </div>
-                <Button
-                  type="button"
-                  className="w-full"
-                  onClick={handleNextStep}
-                >
-                  Next
-                </Button>
-              </div>
+              <NameStep
+                fullName={fullName}
+                setFullName={setFullName}
+                onNext={handleNextStep}
+              />
             ) : (
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">Profile Picture</label>
-                  <div className="flex flex-col items-center space-y-4">
-                    <Avatar 
-                      className="w-24 h-24 cursor-pointer hover:opacity-80 transition-opacity"
-                      onClick={handleAvatarClick}
-                    >
-                      <AvatarImage src={previewUrl} />
-                      <AvatarFallback>
-                        {user?.email?.charAt(0).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/*"
-                      onChange={handleFileSelect}
-                      className="hidden"
-                    />
-                    <p className="text-sm text-muted-foreground">
-                      Click the circle to upload a profile picture
-                    </p>
-                  </div>
-                </div>
-                <div className="flex space-x-3">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="flex-1"
-                    onClick={() => setStep(1)}
-                  >
-                    Back
-                  </Button>
-                  <Button
-                    type="submit"
-                    className="flex-1"
-                    disabled={loading}
-                  >
-                    {loading ? "Saving..." : "Complete Profile"}
-                  </Button>
-                </div>
-              </div>
+              <PhotoStep
+                user={user}
+                selectedFile={selectedFile}
+                previewUrl={previewUrl}
+                onFileSelect={handleFileSelect}
+                onBack={() => setStep(1)}
+                loading={loading}
+              />
             )}
           </form>
         </CardContent>
