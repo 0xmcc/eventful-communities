@@ -4,16 +4,8 @@ import Navigation from "./Navigation";
 import TopNavigation from "./TopNavigation";
 import { PhoneAuthDialog } from "../auth/PhoneAuthDialog";
 import { EmailAuthDialog } from "../auth/EmailAuthDialog";
-import { Button } from "../ui/button";
-import { Phone, Mail, PlusCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import HeaderActions from "./HeaderActions";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -68,57 +60,11 @@ const Layout = ({ children }: LayoutProps) => {
           <div className="hidden md:flex flex-1 justify-center">
             <TopNavigation />
           </div>
-          <div className="flex items-center space-x-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => navigate('/create-event')}
-            >
-              <PlusCircle className="h-4 w-4 mr-2" />
-              Create
-            </Button>
-            {userProfile ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="flex items-center space-x-2">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={userProfile.avatar_url} />
-                      <AvatarFallback>
-                        {userProfile.full_name?.charAt(0) || userProfile.username?.charAt(0)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <span>{userProfile.full_name || userProfile.username}</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="z-50">
-                  <DropdownMenuItem onClick={async () => {
-                    await supabase.auth.signOut();
-                    navigate('/');
-                  }}>
-                    Sign Out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm">
-                    Sign In
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="z-50">
-                  <DropdownMenuItem onClick={() => setIsEmailAuthDialogOpen(true)}>
-                    <Mail className="h-4 w-4 mr-2" />
-                    Sign in with Email
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setIsPhoneAuthDialogOpen(true)}>
-                    <Phone className="h-4 w-4 mr-2" />
-                    Sign in with Phone
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
-          </div>
+          <HeaderActions
+            userProfile={userProfile}
+            onOpenEmailAuth={() => setIsEmailAuthDialogOpen(true)}
+            onOpenPhoneAuth={() => setIsPhoneAuthDialogOpen(true)}
+          />
         </div>
       </header>
       <main className="pt-14 pb-16 md:pb-0 relative z-0">
