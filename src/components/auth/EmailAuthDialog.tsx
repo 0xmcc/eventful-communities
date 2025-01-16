@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 interface EmailAuthDialogProps {
   isOpen: boolean;
@@ -26,6 +27,22 @@ export function EmailAuthDialog({ isOpen, onClose }: EmailAuthDialogProps) {
     }
   }, [isOpen]);
 
+  const createProfile = async (userId: string) => {
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .insert({
+          user_id: userId,
+          username: email // Use email as initial username
+        });
+      
+      if (error) throw error;
+    } catch (error: any) {
+      console.error('Error creating profile:', error);
+      toast.error('Failed to create profile');
+    }
+  };
+
   const handleSubmit = async () => {
     if (!email || !password) {
       toast.error('Please fill in all fields');
@@ -37,12 +54,28 @@ export function EmailAuthDialog({ isOpen, onClose }: EmailAuthDialogProps) {
       : await signInWithEmail(email, password);
     
     if (result.success) {
-      toast.success(isSignUp ? 'Account created successfully!' : 'Signed in successfully!');
-      onClose();
       if (isSignUp) {
+        // Create profile after successful signup
+        await createProfile(result.data.user.id);
+        toast.success('Account created successfully!');
+        onClose();
         navigate('/onboarding');
       } else {
-        navigate('/events');
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select()
+          .eq('user_id', result.data.user.id)
+          .maybeSingle();
+
+        toast.success('Signed in successfully!');
+        onClose();
+        
+        // If no profile exists or profile is incomplete, redirect to onboarding
+        if (!profile || !profile.full_name) {
+          navigate('/onboarding');
+        } else {
+          navigate('/events');
+        }
       }
     } else {
       toast.error(result.error || 'Authentication failed');
