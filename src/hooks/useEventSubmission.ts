@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
 import { useGeocoding } from "@/hooks/useGeocoding";
+import { uploadEventCoverImage } from "@/utils/eventImageUpload";
+import { transformEventData } from "@/utils/eventDataTransform";
 
 interface EventSubmissionData {
   name: string;
@@ -58,45 +60,24 @@ export const useEventSubmission = (profile: Tables<"profiles"> | null) => {
         }
       }
 
-      // Combine date and time
-      const eventDateTime = new Date(data.date);
-      const [hours, minutes] = data.time.split(":");
-      eventDateTime.setHours(parseInt(hours), parseInt(minutes));
-
       // Upload image if exists
       let coverImageUrl = "";
       if (data.coverImage) {
-        const fileExt = data.coverImage.name.split(".").pop();
-        const fileName = `${Math.random()}.${fileExt}`;
-        const filePath = `event-covers/${fileName}`;
-
-        const { error: uploadError, data: uploadData } = await supabase.storage
-          .from("images")
-          .upload(filePath, data.coverImage);
-
-        if (uploadError) throw uploadError;
-
-        const {
-          data: { publicUrl },
-        } = supabase.storage.from("images").getPublicUrl(filePath);
-
-        coverImageUrl = publicUrl;
+        coverImageUrl = await uploadEventCoverImage(data.coverImage);
       }
 
-      // Create event
-      const { error: eventError } = await supabase.from("events").insert({
-        name: data.name,
-        description: data.description,
-        category: data.category,
-        address: data.address,
+      // Transform and save event data
+      const eventData = transformEventData(
+        data,
+        coverImageUrl,
         latitude,
         longitude,
-        start_time: eventDateTime.toISOString(),
-        duration: data.duration,
-        cover_image_url: coverImageUrl,
-        creator_id: profile.id,
-        is_public: true,
-      } as Tables<"events">);
+        profile.id
+      );
+
+      const { error: eventError } = await supabase
+        .from("events")
+        .insert(eventData);
 
       if (eventError) throw eventError;
 
