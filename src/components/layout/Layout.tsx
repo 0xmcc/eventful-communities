@@ -41,7 +41,7 @@ const Layout = ({ children }: LayoutProps) => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => setEmailAuthDialogOpen(true)}>
+              <DropdownMenuItem onClick={() => setIsEmailAuthDialogOpen(true)}>
                 <Mail className="h-4 w-4 mr-2" />
                 Sign in with Email
               </DropdownMenuItem>
