@@ -1,16 +1,24 @@
 import { useState } from "react";
 import Navigation from "./Navigation";
-import TopNavigation from "./TopNavigation.tsx";
+import TopNavigation from "./TopNavigation";
 import { PhoneAuthDialog } from "../auth/PhoneAuthDialog";
+import { EmailAuthDialog } from "../auth/EmailAuthDialog";
 import { Button } from "../ui/button";
-import { Phone } from "lucide-react";
+import { Phone, Mail } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
 const Layout = ({ children }: LayoutProps) => {
-  const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false);
+  const [isPhoneAuthDialogOpen, setIsPhoneAuthDialogOpen] = useState(false);
+  const [isEmailAuthDialogOpen, setIsEmailAuthDialogOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-background">
@@ -22,15 +30,27 @@ const Layout = ({ children }: LayoutProps) => {
           <div className="hidden md:flex ml-auto">
             <TopNavigation />
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="absolute right-0 top-1/2 -translate-y-1/2 mr-4"
-            onClick={() => setIsAuthDialogOpen(true)}
-          >
-            <Phone className="h-4 w-4 mr-2" />
-            Sign In
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="absolute right-0 top-1/2 -translate-y-1/2 mr-4"
+              >
+                Sign In
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => setEmailAuthDialogOpen(true)}>
+                <Mail className="h-4 w-4 mr-2" />
+                Sign in with Email
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setIsPhoneAuthDialogOpen(true)}>
+                <Phone className="h-4 w-4 mr-2" />
+                Sign in with Phone
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </header>
       <main className="pt-14 pb-16 md:pb-0">
@@ -40,8 +60,12 @@ const Layout = ({ children }: LayoutProps) => {
         <Navigation />
       </div>
       <PhoneAuthDialog 
-        isOpen={isAuthDialogOpen} 
-        onClose={() => setIsAuthDialogOpen(false)} 
+        isOpen={isPhoneAuthDialogOpen} 
+        onClose={() => setIsPhoneAuthDialogOpen(false)} 
+      />
+      <EmailAuthDialog 
+        isOpen={isEmailAuthDialogOpen} 
+        onClose={() => setIsEmailAuthDialogOpen(false)} 
       />
     </div>
   );

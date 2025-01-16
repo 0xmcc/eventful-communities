@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { AuthError } from '@supabase/supabase-js';
 
 interface AuthResponse {
   success: boolean;
@@ -103,6 +104,58 @@ export function useAuth() {
     }
   };
 
+  const signInWithEmail = async (email: string, password: string): Promise<AuthResponse> => {
+    console.group('📧 Email Sign In Attempt');
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+
+      console.log('Sign in successful:', data);
+      return { success: true, error: null };
+    } catch (err) {
+      console.error('Email Sign In Error:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to sign in';
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
+    } finally {
+      setIsLoading(false);
+      console.groupEnd();
+    }
+  };
+
+  const signUp = async (email: string, password: string): Promise<AuthResponse> => {
+    console.group('📝 Sign Up Attempt');
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+
+      console.log('Sign up successful:', data);
+      return { success: true, error: null };
+    } catch (err) {
+      console.error('Sign Up Error:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to sign up';
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
+    } finally {
+      setIsLoading(false);
+      console.groupEnd();
+    }
+  };
+
   const signOut = async (): Promise<void> => {
     console.log('📤 Signing out user...');
     await supabase.auth.signOut();
@@ -112,8 +165,10 @@ export function useAuth() {
   return {
     signInWithPhone,
     verifyOTP,
+    signInWithEmail,
+    signUp,
     signOut,
     isLoading,
     error,
   };
-} 
+}
