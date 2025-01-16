@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { startOfDay, endOfDay, addDays, startOfWeek, endOfWeek, startOfMonth, endOfMonth } from "date-fns";
 import EventsGrid from "./EventsGrid";
-import EventsFilters from "./EventsFilters";
+import { ThemeEditor } from "@/components/theme/ThemeEditor";
 import { useEvents } from "./useEvents";
 
 const EventsList = () => {
@@ -52,15 +52,17 @@ const EventsList = () => {
   });
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
+    <div className="events-container container mx-auto px-4 py-8">
+      <div className="events-header flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Events</h1>
       </div>
 
-      <EventsFilters
-        dateFilter={dateFilter}
-        setDateFilter={setDateFilter}
-      />
+      <div className="theme-editor-section mb-8">
+        <h2 className="text-2xl font-bold mb-4">Customize Theme</h2>
+        <ThemeEditor className="max-w-2xl" />
+      </div>
+
+      
 
       <EventsGrid
         events={filteredEvents}

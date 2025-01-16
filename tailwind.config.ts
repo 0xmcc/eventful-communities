@@ -1,7 +1,7 @@
 import type { Config } from "tailwindcss";
 
 export default {
-  darkMode: ["class"],
+  // darkMode: ["class"],
   content: [
     "./pages/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
@@ -76,4 +76,5 @@ export default {
     },
   },
   plugins: [require("tailwindcss-animate")],
+  preflight: false,
 } satisfies Config;

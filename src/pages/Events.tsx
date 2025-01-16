@@ -59,11 +59,7 @@ const Events = () => {
           </div>
         </div>
 
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-4">Customize Theme</h2>
-          <ThemeEditor className="max-w-2xl" />
-        </div>
-
+ 
         {isLoading ? (
           <div className="flex justify-center items-center min-h-[200px]">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
