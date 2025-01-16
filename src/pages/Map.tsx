@@ -79,13 +79,20 @@ const Map = () => {
   return (
     <Layout>
       <div className="flex flex-col md:flex-row h-[calc(100vh-3.5rem)]">
+        {/* Events Section - Left side on desktop */}
+        {!isMobile && (
+          <div className="w-1/2 border-r overflow-auto">
+            <EventsList />
+          </div>
+        )}
+
         {/* Map Section */}
         <div className="flex-1 relative">
           <GoogleMapComponent events={events || []} />
         </div>
 
-        {/* Events Section */}
-        {isMobile ? (
+        {/* Mobile Bottom Sheet */}
+        {isMobile && (
           <Sheet>
             <SheetTrigger asChild>
               <Button 
@@ -99,10 +106,6 @@ const Map = () => {
               <EventsList />
             </SheetContent>
           </Sheet>
-        ) : (
-          <div className="w-1/2 border-l">
-            <EventsList />
-          </div>
         )}
       </div>
     </Layout>
