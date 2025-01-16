@@ -5,13 +5,34 @@ import { useNavigate } from "react-router-dom";
 import { useUser } from "@supabase/auth-helpers-react";
 import { Tables } from "@/integrations/supabase/types";
 import { EventForm } from "@/components/events/EventForm";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const CreateEvent = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const user = useUser();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [profile, setProfile] = useState<any>(null);
+
+  useEffect(() => {
+    const checkProfile = async () => {
+      if (user) {
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('user_id', user.id)
+          .single();
+        
+        if (profileData) {
+          setProfile(profileData);
+        }
+      }
+      setIsLoading(false);
+    };
+
+    checkProfile();
+  }, [user]);
 
   const handleSubmit = async ({
     name,
@@ -36,7 +57,7 @@ const CreateEvent = () => {
     duration: string;
     coverImage: File | null;
   }) => {
-    if (!user) {
+    if (!profile) {
       toast({
         title: "Authentication required",
         description: "Please sign in to create an event",
@@ -93,7 +114,7 @@ const CreateEvent = () => {
         start_time: eventDateTime.toISOString(),
         duration,
         cover_image_url: coverImageUrl,
-        creator_id: user.id,
+        creator_id: profile.id,
         is_public: true,
       } as Tables<"events">);
 
@@ -116,6 +137,16 @@ const CreateEvent = () => {
       setIsSubmitting(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="container mx-auto px-4 py-8">
+          Loading...
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
