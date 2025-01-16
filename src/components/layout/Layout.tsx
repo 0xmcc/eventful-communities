@@ -23,32 +23,34 @@ const Layout = ({ children }: LayoutProps) => {
   return (
     <div className="min-h-screen bg-background">
       <header className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50">
-        <div className="relative flex items-center justify-between h-14 px-4 max-w-7xl mx-auto">
+        <div className="relative flex items-center h-14 px-4 max-w-7xl mx-auto">
           <span className="font-['Space_Grotesk'] text-2xl font-bold text-primary">
             vently
           </span>
-          <div className="flex items-center space-x-4">
-            <div className="hidden md:block">
-              <TopNavigation />
-            </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm">
-                  Sign In
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setIsEmailAuthDialogOpen(true)}>
-                  <Mail className="h-4 w-4 mr-2" />
-                  Sign in with Email
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setIsPhoneAuthDialogOpen(true)}>
-                  <Phone className="h-4 w-4 mr-2" />
-                  Sign in with Phone
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+          <div className="hidden md:flex ml-auto">
+            <TopNavigation />
           </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="absolute right-0 top-1/2 -translate-y-1/2 mr-4"
+              >
+                Sign In
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => setIsEmailAuthDialogOpen(true)}>
+                <Mail className="h-4 w-4 mr-2" />
+                Sign in with Email
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setIsPhoneAuthDialogOpen(true)}>
+                <Phone className="h-4 w-4 mr-2" />
+                Sign in with Phone
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </header>
       <main className="pt-14 pb-16 md:pb-0">
