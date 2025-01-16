@@ -5,6 +5,7 @@ import { ChevronUp } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { ThemeEditor } from "@/components/theme/ThemeEditor";
 import {
   Select,
   SelectContent,
@@ -77,6 +78,7 @@ const MobileEventSheet = () => {
               </SelectContent>
             </Select>
           </div>
+          <ThemeEditor className="mb-4" />
           <EventsList />
         </div>
       </SheetContent>

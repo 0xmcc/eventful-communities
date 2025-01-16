@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import Layout from "@/components/layout/Layout";
 import EventCard from "@/components/events/EventCard";
+import { ThemeEditor } from "@/components/theme/ThemeEditor";
 import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
 import { Loader2 } from "lucide-react";
@@ -56,6 +57,11 @@ const Events = () => {
           <div className="flex gap-4">
             {/* Add filter buttons here later */}
           </div>
+        </div>
+
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold mb-4">Customize Theme</h2>
+          <ThemeEditor className="max-w-2xl" />
         </div>
 
         {isLoading ? (
