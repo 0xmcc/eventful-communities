@@ -11,7 +11,6 @@ const Onboarding = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [fullName, setFullName] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -29,11 +28,24 @@ const Onboarding = () => {
     checkUser();
   }, [navigate]);
 
+  // Cleanup preview URL when component unmounts
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      // Cleanup previous preview URL if it exists
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+      
       setSelectedFile(file);
-      // Create a preview URL for the selected image
       const objectUrl = URL.createObjectURL(file);
       setPreviewUrl(objectUrl);
     }
@@ -42,7 +54,7 @@ const Onboarding = () => {
   const uploadAvatar = async (file: File): Promise<string> => {
     const fileExt = file.name.split('.').pop();
     const fileName = `${crypto.randomUUID()}.${fileExt}`;
-    const filePath = `${fileName}`;
+    const filePath = fileName;
 
     const { error: uploadError } = await supabase.storage
       .from('avatars')
@@ -78,10 +90,10 @@ const Onboarding = () => {
 
     setLoading(true);
     try {
-      let finalAvatarUrl = avatarUrl;
+      let avatarUrl = '';
       
       if (selectedFile) {
-        finalAvatarUrl = await uploadAvatar(selectedFile);
+        avatarUrl = await uploadAvatar(selectedFile);
       }
 
       const { error } = await supabase
@@ -90,7 +102,7 @@ const Onboarding = () => {
           user_id: user.id,
           username: user.email,
           full_name: fullName,
-          avatar_url: finalAvatarUrl,
+          avatar_url: avatarUrl,
         });
 
       if (error) throw error;
@@ -143,7 +155,7 @@ const Onboarding = () => {
                   <label className="block text-sm font-medium mb-2">Profile Picture</label>
                   <div className="flex flex-col items-center space-y-4">
                     <Avatar className="w-24 h-24">
-                      <AvatarImage src={previewUrl || avatarUrl} />
+                      <AvatarImage src={previewUrl} />
                       <AvatarFallback>
                         {user?.email?.charAt(0).toUpperCase()}
                       </AvatarFallback>
