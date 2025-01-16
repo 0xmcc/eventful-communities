@@ -16,9 +16,11 @@ const Layout = ({ children }: LayoutProps) => {
   const [isPhoneAuthDialogOpen, setIsPhoneAuthDialogOpen] = useState(false);
   const [isEmailAuthDialogOpen, setIsEmailAuthDialogOpen] = useState(false);
   const [userProfile, setUserProfile] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const checkUser = async () => {
+      setIsLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         const { data: profile } = await supabase
@@ -32,7 +34,10 @@ const Layout = ({ children }: LayoutProps) => {
         } else {
           navigate('/onboarding');
         }
+      } else {
+        setUserProfile(null);
       }
+      setIsLoading(false);
     };
 
     checkUser();
@@ -58,7 +63,7 @@ const Layout = ({ children }: LayoutProps) => {
             vently
           </span>
           <div className="hidden md:flex flex-1 justify-center">
-            <TopNavigation />
+            <TopNavigation isAuthenticated={!!userProfile} />
           </div>
           <HeaderActions
             userProfile={userProfile}
