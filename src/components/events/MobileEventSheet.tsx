@@ -18,11 +18,19 @@ const MobileEventSheet = () => {
   const [searchQuery, setSearchQuery] = useState("");
   
   const { data: events } = useQuery({
-    queryKey: ["events"],
+    queryKey: ["events", searchQuery],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("events")
-        .select("*")
+        .select(`
+          *,
+          creator:creator_id (
+            id,
+            username,
+            full_name,
+            avatar_url
+          )
+        `)
         .order("start_time", { ascending: true })
         .ilike("name", `%${searchQuery}%`);
 
