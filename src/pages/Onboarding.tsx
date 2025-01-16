@@ -14,6 +14,8 @@ const Onboarding = () => {
   const [avatarUrl, setAvatarUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>("");
 
   useEffect(() => {
     const checkUser = async () => {
@@ -26,6 +28,36 @@ const Onboarding = () => {
     };
     checkUser();
   }, [navigate]);
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      // Create a preview URL for the selected image
+      const objectUrl = URL.createObjectURL(file);
+      setPreviewUrl(objectUrl);
+    }
+  };
+
+  const uploadAvatar = async (file: File): Promise<string> => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${crypto.randomUUID()}.${fileExt}`;
+    const filePath = `${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('avatars')
+      .upload(filePath, file);
+
+    if (uploadError) {
+      throw uploadError;
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('avatars')
+      .getPublicUrl(filePath);
+
+    return publicUrl;
+  };
 
   const handleNextStep = () => {
     if (step === 1 && !fullName.trim()) {
@@ -46,13 +78,19 @@ const Onboarding = () => {
 
     setLoading(true);
     try {
+      let finalAvatarUrl = avatarUrl;
+      
+      if (selectedFile) {
+        finalAvatarUrl = await uploadAvatar(selectedFile);
+      }
+
       const { error } = await supabase
         .from("profiles")
         .insert({
           user_id: user.id,
           username: user.email,
           full_name: fullName,
-          avatar_url: avatarUrl,
+          avatar_url: finalAvatarUrl,
         });
 
       if (error) throw error;
@@ -105,16 +143,15 @@ const Onboarding = () => {
                   <label className="block text-sm font-medium mb-2">Profile Picture</label>
                   <div className="flex flex-col items-center space-y-4">
                     <Avatar className="w-24 h-24">
-                      <AvatarImage src={avatarUrl} />
+                      <AvatarImage src={previewUrl || avatarUrl} />
                       <AvatarFallback>
                         {user?.email?.charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                     <Input
-                      type="url"
-                      placeholder="Enter image URL"
-                      value={avatarUrl}
-                      onChange={(e) => setAvatarUrl(e.target.value)}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileSelect}
                       className="w-full"
                     />
                   </div>
