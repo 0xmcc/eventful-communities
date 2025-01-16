@@ -5,7 +5,6 @@ import EventsFilters from "./EventsFilters";
 import { useEvents } from "./useEvents";
 
 const EventsList = () => {
-  const [searchQuery, setSearchQuery] = useState("");
   const [dateFilter, setDateFilter] = useState<string | null>(null);
   
   const { data: events, isLoading, error } = useEvents();
@@ -40,19 +39,13 @@ const EventsList = () => {
   };
 
   const filteredEvents = events?.filter((event) => {
-    const matchesSearch = searchQuery
-      ? event.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        event.description?.toLowerCase().includes(searchQuery.toLowerCase())
-      : true;
-
-    if (!dateFilter) return matchesSearch;
+    if (!dateFilter) return true;
 
     const dateRange = getDateRange(dateFilter);
-    if (!dateRange) return matchesSearch;
+    if (!dateRange) return true;
 
     const eventDate = new Date(event.start_time);
     return (
-      matchesSearch &&
       eventDate >= dateRange.start &&
       eventDate <= dateRange.end
     );
@@ -65,8 +58,6 @@ const EventsList = () => {
       </div>
 
       <EventsFilters
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
         dateFilter={dateFilter}
         setDateFilter={setDateFilter}
       />

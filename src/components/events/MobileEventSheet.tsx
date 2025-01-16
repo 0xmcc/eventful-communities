@@ -12,15 +12,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useState } from "react";
 
 const MobileEventSheet = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  
   const { data: events } = useQuery({
     queryKey: ["events"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("events")
         .select("*")
-        .order("start_time", { ascending: true });
+        .order("start_time", { ascending: true })
+        .ilike("name", `%${searchQuery}%`);
 
       if (error) throw error;
       return data;
@@ -50,6 +54,8 @@ const MobileEventSheet = () => {
               type="search" 
               placeholder="Search events..." 
               className="flex-1"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
             <Select>
               <SelectTrigger className="w-[140px]">
