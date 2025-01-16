@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Navigation from "./Navigation";
-import TopNavigation from "./TopNavigation";
+import TopNavigation from "./TopNavigation.tsx";
 import { PhoneAuthDialog } from "../auth/PhoneAuthDialog";
 import { Button } from "../ui/button";
 import { Phone } from "lucide-react";
