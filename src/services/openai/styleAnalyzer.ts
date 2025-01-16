@@ -30,7 +30,7 @@ export const analyzeStyleRequest = async (message: string): Promise<StyleAnalysi
       { role: "system", content: systemPrompt },
       { role: "user", content: message }
     ]);
-    console.log('Style analysis response:', response);
+    console.log('Style analysis response:', response);          
 
     return JSON.parse(response);
   } catch (error) {

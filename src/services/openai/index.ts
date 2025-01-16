@@ -8,14 +8,14 @@ export const generateStylesWithAI = async ({ prompt, onChunk }: OpenAIStreamPara
     if (!prompt.trim()) {
       throw new Error("Please provide a style description");
     }
-
+    const body = prepareRequestBody(prompt);
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
       },
-      body: prepareRequestBody(prompt)
+      body: body
     });
 
     if (!response.ok) {

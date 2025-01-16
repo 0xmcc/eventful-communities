@@ -10,12 +10,7 @@ interface ChatInputProps {
   disabled?: boolean;
 }
 
-export const ChatInput = ({ 
-  value, 
-  onChange, 
-  onSubmit, 
-  disabled 
-}: ChatInputProps) => {
+export const ChatInput = ({ value, onChange, onSubmit,disabled }: ChatInputProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(e);
