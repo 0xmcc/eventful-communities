@@ -19,4 +19,10 @@ export interface StreamLineResult {
   openBraces: number;
   closeBraces: number;
   isComplete: boolean;
+}
+
+export interface ChatAnalysis {
+  isStyleRequest: boolean;
+  suggestedStyles?: string;  // CSS description if it's a style request
+  response: string;          // General response to show user
 } 

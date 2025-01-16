@@ -4,12 +4,18 @@ import { Textarea } from "@/components/ui/textarea";
 import { useCssUpdate } from "@/hooks/useCssUpdate";
 import { Loader2 } from "lucide-react";
 
+const STORAGE_KEY = "theme-editor-content";
+
 interface ThemeEditorProps {
   className?: string;
 }
 
 export const ThemeEditor = ({ className }: ThemeEditorProps) => {
-  const [styleDescription, setStyleDescription] = React.useState("");
+  // Initialize from localStorage if available
+  const [styleDescription, setStyleDescription] = React.useState(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    return saved || "";
+  });
   const [generatedCss, setGeneratedCss] = React.useState("");
   
   const {
@@ -17,24 +23,31 @@ export const ThemeEditor = ({ className }: ThemeEditorProps) => {
     handleGenerateCSS,
     handleCSSUpdate,
   } = useCssUpdate(
-    styleDescription,  // The input text that describes desired styles
-    setGeneratedCss,  // Function to update the generated CSS
+    styleDescription,
+    setGeneratedCss,
     (chunk: string) => {
-      setGeneratedCss(prev => prev + chunk);  // Accumulate streaming chunks
+      setGeneratedCss(prev => prev + chunk);
     }
   );
+
+  // Save to localStorage whenever content changes
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, styleDescription);
+  }, [styleDescription]);
 
   return (
     <div className={`space-y-4 ${className}`}>
       <Textarea
-        value={isGenerating ? generatedCss : styleDescription}  // Show streaming during generation
+        data-theme-editor
+        value={isGenerating ? generatedCss : styleDescription}
         onChange={(e) => setStyleDescription(e.target.value)}
-        placeholder="Describe the styles you want (e.g., 'modern dark theme with purple accents')"
+        placeholder="Describe the styles you want..."
         className="min-h-[100px] resize-none"
         disabled={isGenerating}
       />
       <div className="flex gap-2">
         <Button
+          data-generate-css
           onClick={handleGenerateCSS}
           variant="secondary"
           className="flex-1"

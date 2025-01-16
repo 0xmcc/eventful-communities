@@ -1,5 +1,7 @@
 import { supabase } from '@/integrations/supabase/client';
 import { STYLE_GENERATION_PROMPT } from '@/config/aiPrompts';
+import { OpenAIStreamParams } from './types';
+
 interface OpenAIResponse {
   choices: Array<{
     delta?: {
@@ -117,5 +119,36 @@ export const generateStylesWithAI = async (
       throw new Error(`Style Generation Error: ${error.message}`);
     }
     throw new Error("An unknown error occurred while generating styles");
+  }
+}; 
+
+export const callOpenAI = async (messages: Array<{ role: string; content: string }>) => {
+  try {
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "gpt-4",
+        messages,
+        temperature: 0.7,
+        max_tokens: 500,
+        stream: false
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error?.message || "Failed to connect to OpenAI API");
+    }
+
+    const data = await response.json();
+    return data.choices[0].message.content;
+
+  } catch (error) {
+    console.error('OpenAI API error:', error);
+    throw error;
   }
 }; 
