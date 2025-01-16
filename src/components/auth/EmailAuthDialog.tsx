@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,12 +12,12 @@ interface EmailAuthDialogProps {
 }
 
 export function EmailAuthDialog({ isOpen, onClose }: EmailAuthDialogProps) {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
   const { signInWithEmail, signUp, isLoading, error } = useAuth();
 
-  // Reset state when dialog is closed
   useEffect(() => {
     if (!isOpen) {
       setEmail('');
@@ -38,6 +39,11 @@ export function EmailAuthDialog({ isOpen, onClose }: EmailAuthDialogProps) {
     if (result.success) {
       toast.success(isSignUp ? 'Account created successfully!' : 'Signed in successfully!');
       onClose();
+      if (isSignUp) {
+        navigate('/onboarding');
+      } else {
+        navigate('/events');
+      }
     } else {
       toast.error(result.error || 'Authentication failed');
     }

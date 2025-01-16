@@ -8,6 +8,7 @@ import Events from "./pages/Events";
 import Communities from "./pages/Communities";
 import CreateEvent from "./pages/CreateEvent";
 import Map from "./pages/Map";
+import Onboarding from "./pages/Onboarding";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/communities" element={<Communities />} />
           <Route path="/create-event" element={<CreateEvent />} />
           <Route path="/map" element={<Map />} />
+          <Route path="/onboarding" element={<Onboarding />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
