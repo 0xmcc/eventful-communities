@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { MapPin, Calendar, Users, PlusCircle } from "lucide-react";
+import { MapPin, Calendar, Users } from "lucide-react";
 
 const TopNavigation = () => {
   const location = useLocation();
@@ -8,7 +8,6 @@ const TopNavigation = () => {
     { icon: MapPin, label: "Map", path: "/map" },
     { icon: Calendar, label: "Events", path: "/events" },
     { icon: Users, label: "Communities", path: "/communities" },
-    { icon: PlusCircle, label: "Create", path: "/create-event" },
   ];
 
   return (
@@ -31,4 +30,4 @@ const TopNavigation = () => {
   );
 };
 
-export default TopNavigation; 
+export default TopNavigation;
