@@ -41,16 +41,14 @@ export const EventBasicInfo = ({
   onCategoryChange,
 }: EventBasicInfoProps) => {
   return (
-    <div className="space-y-6">
-      <div className="space-y-2">
-        <Label htmlFor="name">Event Name</Label>
+    <div className="space-y-8">
+      <div>
         <Input
-          id="name"
-          placeholder="Give your event a catchy name"
+          placeholder="Event Name"
           value={name}
           onChange={(e) => onNameChange(e.target.value)}
           required
-          className="text-lg"
+          className="text-4xl font-bold border-none px-0 placeholder:text-muted-foreground/50"
         />
       </div>
 

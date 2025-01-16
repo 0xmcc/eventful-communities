@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { useGeocoding } from "@/hooks/useGeocoding";
 import { loadGoogleMapsApi } from "@/utils/loadGoogleMapsApi";
@@ -8,8 +8,9 @@ interface AddressInputProps {
 }
 
 export const AddressInput = ({ onAddressSelect }: AddressInputProps) => {
-  const [address, setAddress] = useState("");
   const [isApiLoaded, setIsApiLoaded] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
   const { geocodeAddress, isLoading, error } = useGeocoding();
 
   useEffect(() => {
@@ -18,14 +19,23 @@ export const AddressInput = ({ onAddressSelect }: AddressInputProps) => {
       .catch(console.error);
   }, []);
 
-  const handleAddressSubmit = async () => {
-    if (!address) return;
+  useEffect(() => {
+    if (isApiLoaded && inputRef.current) {
+      autocompleteRef.current = new google.maps.places.Autocomplete(
+        inputRef.current,
+        { types: ["address"] }
+      );
 
-    const result = await geocodeAddress(address);
-    if (result) {
-      onAddressSelect(result.address, result.latitude, result.longitude);
+      autocompleteRef.current.addListener("place_changed", () => {
+        const place = autocompleteRef.current?.getPlace();
+        if (place?.geometry?.location) {
+          const lat = place.geometry.location.lat();
+          const lng = place.geometry.location.lng();
+          onAddressSelect(place.formatted_address || "", lat, lng);
+        }
+      });
     }
-  };
+  }, [isApiLoaded, onAddressSelect]);
 
   if (!isApiLoaded) {
     return <div>Loading Google Maps...</div>;
@@ -34,14 +44,13 @@ export const AddressInput = ({ onAddressSelect }: AddressInputProps) => {
   return (
     <div className="space-y-2">
       <Input
+        ref={inputRef}
         type="text"
-        value={address}
-        onChange={(e) => setAddress(e.target.value)}
-        placeholder="Enter address"
-        onBlur={handleAddressSubmit}
+        placeholder="Enter location"
+        className="w-full"
         disabled={isLoading}
       />
       {error && <p className="text-sm text-red-500">{error}</p>}
     </div>
   );
-}; 
+};

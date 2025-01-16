@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { ImageIcon } from "lucide-react";
 import { useState } from "react";
 
@@ -23,35 +22,32 @@ export const EventCoverImage = ({ onImageChange }: EventCoverImageProps) => {
   };
 
   return (
-    <div className="space-y-4">
-      <Label>Cover Image</Label>
-      <div className="flex items-center gap-4">
-        <Button
-          type="button"
-          variant="outline"
-          className="w-[120px]"
-          onClick={() => document.getElementById("cover-image")?.click()}
-        >
-          <ImageIcon className="mr-2 h-4 w-4" />
-          Upload
-        </Button>
-        <input
-          id="cover-image"
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={handleImageChange}
+    <div 
+      className="relative w-full h-[200px] mb-8 rounded-lg overflow-hidden cursor-pointer group"
+      onClick={() => document.getElementById("cover-image")?.click()}
+    >
+      {imagePreview ? (
+        <img
+          src={imagePreview}
+          alt="Cover preview"
+          className="w-full h-full object-cover"
         />
-        {imagePreview && (
-          <div className="relative w-32 h-20 rounded-md overflow-hidden">
-            <img
-              src={imagePreview}
-              alt="Cover preview"
-              className="w-full h-full object-cover"
-            />
-          </div>
-        )}
+      ) : (
+        <div className="w-full h-full bg-secondary/10 flex flex-col items-center justify-center">
+          <ImageIcon className="w-12 h-12 text-muted-foreground mb-2" />
+          <p className="text-sm text-muted-foreground">Click to upload cover image</p>
+        </div>
+      )}
+      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+        <p className="text-white font-medium">Change cover image</p>
       </div>
+      <input
+        id="cover-image"
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleImageChange}
+      />
     </div>
   );
 };
