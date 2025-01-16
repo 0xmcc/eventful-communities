@@ -1,27 +1,15 @@
 import React, { useEffect } from 'react';
 import { 
   APIProvider, 
-  Map, 
-  Marker
+  Map
 } from '@vis.gl/react-google-maps';
 import { Tables } from "@/integrations/supabase/types";
+import CustomMarker from './CustomMarker';
 
 interface GoogleMapComponentProps {
   events: Tables<"events">[];
 }
-// Zoom level reference:
-// 1: World view
-// 5: Landmass/continent
-// 10: City
-// 11: City with some detail
-// 12: City districts
-// 13: City streets visible
-// 14: Street names clear
-// 15: Buildings visible
-// 16: Buildings clear
-// 17: Street details
-// 18: Buildings detailed
-// 20: Maximum zoom
+
 const GoogleMapComponent = ({ events }: GoogleMapComponentProps) => {
   useEffect(() => {
     console.log("GoogleMap events:", events);
@@ -36,7 +24,6 @@ const GoogleMapComponent = ({ events }: GoogleMapComponentProps) => {
 
   return (
     <div className="relative w-full h-full">
-
       <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY || ''}>
         <Map
           defaultZoom={13}
@@ -45,20 +32,13 @@ const GoogleMapComponent = ({ events }: GoogleMapComponentProps) => {
           className="w-full h-full"
           gestureHandling={'greedy'}
           disableDefaultUI={true}
-        //   options={{
-        //     zoomControl: false,
-        //     mapTypeControl: false,
-        //     scaleControl: false,
-        //     streetViewControl: false,
-        //     rotateControl: false,
-        //     fullscreenControl: false
-        //   }}
         >
           {events.map((event) => (
-            <Marker
+            <CustomMarker
               key={`marker-${event.id}`}
               position={{ lat: event.latitude, lng: event.longitude }}
               title={event.name}
+              imageUrl={event.cover_image_url}
             />
           ))}
         </Map>
@@ -67,4 +47,4 @@ const GoogleMapComponent = ({ events }: GoogleMapComponentProps) => {
   );
 };
 
-export default GoogleMapComponent; 
+export default GoogleMapComponent;
