@@ -1,14 +1,21 @@
-import { OpenAIStreamParams } from './types';
 import { prepareRequestBody } from './requestBuilder';
 import { handleStream } from './streamProcessor';
 import { extractCSSProperties } from './cssExtractor';
+
+
+export interface OpenAIStreamParams {
+  prompt: string;
+  onChunk?: (chunk: string) => void;
+}
 
 export const generateStylesWithAI = async ({ prompt, onChunk }: OpenAIStreamParams): Promise<string> => {
   try {
     if (!prompt.trim()) {
       throw new Error("Please provide a style description");
     }
+    
     const body = prepareRequestBody(prompt);
+    
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {

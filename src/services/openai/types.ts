@@ -9,11 +9,6 @@ export interface OpenAIResponse {
   }>;
 }
 
-export interface OpenAIStreamParams {
-  prompt: string;
-  onChunk?: (chunk: string) => void;
-}
-
 export interface StreamLineResult {
   newJSON: string;
   openBraces: number;
