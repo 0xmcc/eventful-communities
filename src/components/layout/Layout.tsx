@@ -60,7 +60,7 @@ const Layout = ({ children }: LayoutProps) => {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50">
+      <header className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-40">
         <div className="relative flex items-center justify-between h-14 px-4 max-w-7xl mx-auto">
           <span className="font-['Space_Grotesk'] text-2xl font-bold text-primary">
             vently
@@ -90,7 +90,7 @@ const Layout = ({ children }: LayoutProps) => {
                     <span>{userProfile.full_name || userProfile.username}</span>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
+                <DropdownMenuContent align="end" className="z-50">
                   <DropdownMenuItem onClick={async () => {
                     await supabase.auth.signOut();
                     navigate('/');
@@ -106,7 +106,7 @@ const Layout = ({ children }: LayoutProps) => {
                     Sign In
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
+                <DropdownMenuContent align="end" className="z-50">
                   <DropdownMenuItem onClick={() => setIsEmailAuthDialogOpen(true)}>
                     <Mail className="h-4 w-4 mr-2" />
                     Sign in with Email
@@ -121,7 +121,7 @@ const Layout = ({ children }: LayoutProps) => {
           </div>
         </div>
       </header>
-      <main className="pt-14 pb-16 md:pb-0">
+      <main className="pt-14 pb-16 md:pb-0 relative z-0">
         {children}
       </main>
       <div className="md:hidden">
