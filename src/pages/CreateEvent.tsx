@@ -2,35 +2,11 @@ import Layout from "@/components/layout/Layout";
 import { EventForm } from "@/components/events/EventForm";
 import { useProfile } from "@/hooks/useProfile";
 import { useEventSubmission } from "@/hooks/useEventSubmission";
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { useAuthCheck } from "@/hooks/useAuthCheck";
 
 const CreateEvent = () => {
-  const navigate = useNavigate();
-  const { profile, isLoading } = useProfile();
-  const { handleSubmit, isSubmitting } = useEventSubmission(profile);
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        navigate('/');
-      }
-    };
-
-    checkAuth();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_OUT') {
-        navigate('/');
-      }
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [navigate]);
+  const { userProfile, isLoading } = useAuthCheck();
+  const { handleSubmit, isSubmitting } = useEventSubmission(userProfile);
 
   if (isLoading) {
     return (
@@ -44,7 +20,7 @@ const CreateEvent = () => {
     );
   }
 
-  if (!profile) {
+  if (!userProfile) {
     return (
       <Layout>
         <div className="container mx-auto px-4 py-8">
