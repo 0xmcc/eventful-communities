@@ -26,13 +26,15 @@ const Events = () => {
       console.log("Fetched events:", data);
       return data as Tables<"events">[];
     },
-    onError: (error) => {
-      console.error("Query error:", error);
-      toast({
-        title: "Error",
-        description: "Failed to load events. Please try again later.",
-        variant: "destructive",
-      });
+    meta: {
+      onError: (error: Error) => {
+        console.error("Query error:", error);
+        toast({
+          title: "Error",
+          description: "Failed to load events. Please try again later.",
+          variant: "destructive",
+        });
+      },
     },
   });
 
