@@ -34,7 +34,7 @@ const UserMenu = ({ userProfile, onOpenEmailAuth, onOpenPhoneAuth }: UserMenuPro
             <span>{userProfile.full_name || userProfile.username}</span>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="z-50">
+        <DropdownMenuContent align="end" className="w-56">
           <DropdownMenuItem onClick={async () => {
             await supabase.auth.signOut();
             navigate('/');
@@ -53,7 +53,7 @@ const UserMenu = ({ userProfile, onOpenEmailAuth, onOpenPhoneAuth }: UserMenuPro
           Sign In
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="z-50">
+      <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuItem onClick={onOpenEmailAuth}>
           <Mail className="h-4 w-4 mr-2" />
           Sign in with Email
