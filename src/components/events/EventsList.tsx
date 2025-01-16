@@ -4,9 +4,13 @@ import { Tables } from "@/integrations/supabase/types";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import EventCard from "./EventCard";
+import { useState } from "react";
+import { startOfDay, endOfDay, addDays, startOfWeek, endOfWeek, startOfMonth, endOfMonth } from "date-fns";
 
 const EventsList = () => {
   const { toast } = useToast();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [dateFilter, setDateFilter] = useState<string | null>(null);
   
   const { data: events, isLoading, error } = useQuery({
     queryKey: ["events"],
@@ -37,6 +41,54 @@ const EventsList = () => {
     },
   });
 
+  const getDateRange = (filter: string) => {
+    const now = new Date();
+    switch (filter) {
+      case "Today":
+        return {
+          start: startOfDay(now),
+          end: endOfDay(now),
+        };
+      case "Tomorrow":
+        const tomorrow = addDays(now, 1);
+        return {
+          start: startOfDay(tomorrow),
+          end: endOfDay(tomorrow),
+        };
+      case "This Week":
+        return {
+          start: startOfWeek(now),
+          end: endOfWeek(now),
+        };
+      case "This Month":
+        return {
+          start: startOfMonth(now),
+          end: endOfMonth(now),
+        };
+      default:
+        return null;
+    }
+  };
+
+  const filteredEvents = events?.filter((event) => {
+    const matchesSearch = searchQuery
+      ? event.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        event.description?.toLowerCase().includes(searchQuery.toLowerCase())
+      : true;
+
+    if (!dateFilter) return matchesSearch;
+
+    const dateRange = getDateRange(dateFilter);
+    if (!dateRange) return matchesSearch;
+
+    const eventDate = new Date(event.start_time);
+    return (
+      matchesSearch &&
+      eventDate >= dateRange.start &&
+      eventDate <= dateRange.end
+    );
+  });
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
@@ -54,13 +106,13 @@ const EventsList = () => {
         <div className="text-center text-muted-foreground">
           Failed to load events. Please try again later.
         </div>
-      ) : events?.length === 0 ? (
+      ) : filteredEvents?.length === 0 ? (
         <div className="text-center text-muted-foreground">
           No events found.
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {events?.map((event) => (
+          {filteredEvents?.map((event) => (
             <EventCard key={event.id} event={event} />
           ))}
         </div>
