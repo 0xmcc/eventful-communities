@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Loader2, Wand2 } from "lucide-react";
 import { Tables } from "@/integrations/supabase/types";
 import { EventBasicInfo } from "./EventBasicInfo";
 import { EventDateTime } from "./EventDateTime";
 import { EventLocation } from "./EventLocation";
 import { EventCoverImage } from "./EventCoverImage";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
+import { addHours } from "date-fns";
 
 type EventCategory = Tables<"events">["category"];
 
@@ -27,6 +30,7 @@ interface EventFormProps {
 }
 
 export const EventForm = ({ onSubmit, isSubmitting }: EventFormProps) => {
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -36,10 +40,52 @@ export const EventForm = ({ onSubmit, isSubmitting }: EventFormProps) => {
     longitude: null as number | null,
   });
 
-  const [date, setDate] = useState<Date>();
-  const [time, setTime] = useState("");
-  const [duration, setDuration] = useState("");
+  const defaultDate = addHours(new Date(), 24);
+  const [date, setDate] = useState<Date>(defaultDate);
+  const [time, setTime] = useState(defaultDate.getHours().toString().padStart(2, '0') + ":00");
+  const [duration, setDuration] = useState("01:00");
   const [coverImage, setCoverImage] = useState<File | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const generateSuggestion = async () => {
+    try {
+      setIsGenerating(true);
+      const { data, error } = await supabase.functions.invoke('generate-event-suggestions', {
+        body: { 
+          prompt: "Generate a creative event name and description for a new event." 
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.suggestion) {
+        const suggestion = data.suggestion;
+        const nameMatch = suggestion.match(/Name:(.*?)(?=Description:|$)/s);
+        const descriptionMatch = suggestion.match(/Description:(.*?)(?=$)/s);
+
+        if (nameMatch?.[1] || descriptionMatch?.[1]) {
+          setFormData(prev => ({
+            ...prev,
+            name: nameMatch?.[1]?.trim() || prev.name,
+            description: descriptionMatch?.[1]?.trim() || prev.description
+          }));
+          toast({
+            title: "AI Suggestion Generated",
+            description: "The event details have been updated with AI suggestions.",
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error generating suggestions:', error);
+      toast({
+        title: "Error",
+        description: "Failed to generate AI suggestions. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,7 +101,23 @@ export const EventForm = ({ onSubmit, isSubmitting }: EventFormProps) => {
   return (
     <Card className="max-w-3xl mx-auto">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold">Create New Event</CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-2xl font-bold">Create New Event</CardTitle>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={generateSuggestion}
+            disabled={isGenerating}
+          >
+            {isGenerating ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Wand2 className="mr-2 h-4 w-4" />
+            )}
+            Ask AI
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-8">

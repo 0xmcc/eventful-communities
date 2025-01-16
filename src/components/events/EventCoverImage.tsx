@@ -44,23 +44,20 @@ export const EventCoverImage = ({ onImageChange }: EventCoverImageProps) => {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-end">
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={getRandomImage}
-          disabled={isLoading}
-          className="flex items-center gap-2"
-        >
-          <Shuffle className="w-4 h-4" />
-          Random Cover
-        </Button>
-      </div>
+    <div className="relative">
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
+        onClick={getRandomImage}
+        disabled={isLoading}
+        className="absolute top-2 right-2 z-10"
+      >
+        <Shuffle className="w-4 h-4" />
+      </Button>
       
       <div 
-        className="relative w-full h-[200px] rounded-lg overflow-hidden cursor-pointer group"
+        className="w-full h-[200px] rounded-lg overflow-hidden cursor-pointer group"
         onClick={() => document.getElementById("cover-image")?.click()}
       >
         {imagePreview ? (
