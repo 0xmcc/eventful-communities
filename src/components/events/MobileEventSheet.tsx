@@ -2,16 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import EventsList from "./EventsList";
 import { ChevronUp } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 const MobileEventSheet = () => {
   const { data: events } = useQuery({
@@ -44,27 +36,7 @@ const MobileEventSheet = () => {
         side="bottom" 
         className="h-[80vh] w-full !border-t-0 rounded-t-xl"
       >
-        <div className="space-y-4">
-          <div className="flex gap-2">
-            <Input 
-              type="search" 
-              placeholder="Search events..." 
-              className="flex-1"
-            />
-            <Select>
-              <SelectTrigger className="w-[140px]">
-                <SelectValue placeholder="Filter by date" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="today">Today</SelectItem>
-                <SelectItem value="tomorrow">Tomorrow</SelectItem>
-                <SelectItem value="this-week">This Week</SelectItem>
-                <SelectItem value="this-month">This Month</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <EventsList />
-        </div>
+        <EventsList />
       </SheetContent>
     </Sheet>
   );
