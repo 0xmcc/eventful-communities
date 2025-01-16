@@ -15,7 +15,15 @@ const Events = () => {
       console.log("Fetching events...");
       const { data, error } = await supabase
         .from("events")
-        .select("*")
+        .select(`
+          *,
+          creator:creator_id (
+            id,
+            username,
+            full_name,
+            avatar_url
+          )
+        `)
         .order("start_time", { ascending: true });
 
       if (error) {
@@ -24,7 +32,9 @@ const Events = () => {
       }
 
       console.log("Fetched events:", data);
-      return data as Tables<"events">[];
+      return data as (Tables<"events"> & {
+        creator: Tables<"profiles">
+      })[];
     },
     meta: {
       onError: (error: Error) => {
