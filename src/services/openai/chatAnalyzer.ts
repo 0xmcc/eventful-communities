@@ -1,37 +1,44 @@
-import { ChatAnalysis } from './types';
-import { analyzeStyleRequest } from './styleAnalyzer';
+
+import { isStyleRequest } from './features/styles/analyzer';
 import { getChatResponse } from './chatResponse';
 
+
+export interface ChatAnalysis {
+  hasStyleRequest: boolean;
+  suggestedStyles?: string;  // CSS description if it's a style request
+  response: string;          // General response to show user
+  stylePrompt?: string;     // The original message if it's a style request
+} 
 export const analyzeChatMessage = async (
   message: string,
 ): Promise<ChatAnalysis> => {
   console.log('🚀 Starting chat analysis:', message);
   try {
-    const styleAnalysis = await analyzeStyleRequest(message);
-    console.log('📝 Style analysis complete:', styleAnalysis);
+    const hasStyleRequest = await isStyleRequest(message);
+    console.log('📝 Style analysis complete:', hasStyleRequest);
 
-    if (styleAnalysis.isStyleRequest) {
+    if (hasStyleRequest) {
       // Get chat response
       const chatResponse = await getChatResponse(message, true);
       
       // Return routing information only
       return {
-        isStyleRequest: true,
-        stylePrompt: message, // Pass the original message as the style prompt
+        hasStyleRequest: true,
+        stylePrompt: message,
         response: chatResponse
       };
     }
 
     const response = await getChatResponse(message, false);
     return {
-      isStyleRequest: false,
+      hasStyleRequest: false,
       response
     };
 
   } catch (error) {
     console.error('❌ Chat analysis error:', error);
     return {
-      isStyleRequest: false,
+      hasStyleRequest: false,
       response: "🤔 Hmm, I got a bit tangled up there. Let's talk about styling - that's my favorite topic!"
     };
   }
