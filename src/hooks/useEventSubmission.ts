@@ -3,6 +3,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
+import { useGeocoding } from "@/hooks/useGeocoding";
 
 interface EventSubmissionData {
   name: string;
@@ -21,6 +22,7 @@ export const useEventSubmission = (profile: Tables<"profiles"> | null) => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { geocodeAddress } = useGeocoding();
 
   const handleSubmit = async (data: EventSubmissionData) => {
     if (!profile) {
@@ -43,6 +45,18 @@ export const useEventSubmission = (profile: Tables<"profiles"> | null) => {
 
     try {
       setIsSubmitting(true);
+
+      // Get coordinates from address if not provided
+      let latitude = data.latitude;
+      let longitude = data.longitude;
+      
+      if (!latitude || !longitude) {
+        const geocodeResult = await geocodeAddress(data.address);
+        if (geocodeResult) {
+          latitude = geocodeResult.latitude;
+          longitude = geocodeResult.longitude;
+        }
+      }
 
       // Combine date and time
       const eventDateTime = new Date(data.date);
@@ -75,8 +89,8 @@ export const useEventSubmission = (profile: Tables<"profiles"> | null) => {
         description: data.description,
         category: data.category,
         address: data.address,
-        latitude: data.latitude,
-        longitude: data.longitude,
+        latitude,
+        longitude,
         start_time: eventDateTime.toISOString(),
         duration: data.duration,
         cover_image_url: coverImageUrl,
