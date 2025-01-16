@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -12,18 +13,29 @@ serve(async (req) => {
   }
 
   try {
-    const { prompt } = await req.json();
+    const { field, currentName, currentDescription } = await req.json();
     
     const openai = new OpenAI({
       apiKey: Deno.env.get('OPENAI_API_KEY'),
     });
 
+    let prompt = "";
+    if (field === 'name') {
+      prompt = `Generate a creative and engaging event name${currentName ? ` similar to but different from: "${currentName}"` : ''}.${
+        currentDescription ? ` The event description is: "${currentDescription}"` : ''
+      } Keep it concise and memorable.`;
+    } else {
+      prompt = `Generate an engaging event description${currentDescription ? ` that improves upon: "${currentDescription}"` : ''}.${
+        currentName ? ` The event name is: "${currentName}"` : ''
+      } Keep it informative and compelling, focusing on what makes the event special.`;
+    }
+
     const completion = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: "gpt-4o-mini",
       messages: [
         {
           role: "system",
-          content: "You are a helpful assistant that provides suggestions for event details. Keep responses concise and relevant."
+          content: "You are a helpful assistant that generates creative and professional event content."
         },
         {
           role: "user",

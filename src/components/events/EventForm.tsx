@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, Wand2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { Tables } from "@/integrations/supabase/types";
 import { EventBasicInfo } from "./EventBasicInfo";
 import { EventDateTime } from "./EventDateTime";
@@ -45,45 +45,45 @@ export const EventForm = ({ onSubmit, isSubmitting }: EventFormProps) => {
   const [time, setTime] = useState(defaultDate.getHours().toString().padStart(2, '0') + ":00");
   const [duration, setDuration] = useState("01:00");
   const [coverImage, setCoverImage] = useState<File | null>(null);
-  const [isGenerating, setIsGenerating] = useState(false);
+  const [isGeneratingName, setIsGeneratingName] = useState(false);
+  const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
 
-  const generateSuggestion = async () => {
+  const generateSuggestion = async (field: 'name' | 'description') => {
+    const isName = field === 'name';
+    const setGenerating = isName ? setIsGeneratingName : setIsGeneratingDescription;
+    
     try {
-      setIsGenerating(true);
+      setGenerating(true);
       const { data, error } = await supabase.functions.invoke('generate-event-suggestions', {
         body: { 
-          prompt: "Generate a creative event name and description for a new event." 
+          field,
+          currentName: formData.name,
+          currentDescription: formData.description,
         }
       });
 
       if (error) throw error;
 
       if (data.suggestion) {
-        const suggestion = data.suggestion;
-        const nameMatch = suggestion.match(/Name:(.*?)(?=Description:|$)/s);
-        const descriptionMatch = suggestion.match(/Description:(.*?)(?=$)/s);
-
-        if (nameMatch?.[1] || descriptionMatch?.[1]) {
-          setFormData(prev => ({
-            ...prev,
-            name: nameMatch?.[1]?.trim() || prev.name,
-            description: descriptionMatch?.[1]?.trim() || prev.description
-          }));
-          toast({
-            title: "AI Suggestion Generated",
-            description: "The event details have been updated with AI suggestions.",
-          });
-        }
+        setFormData(prev => ({
+          ...prev,
+          [field]: data.suggestion.trim()
+        }));
+        
+        toast({
+          title: "AI Suggestion Generated",
+          description: `The event ${field} has been updated with AI suggestions.`,
+        });
       }
     } catch (error) {
       console.error('Error generating suggestions:', error);
       toast({
         title: "Error",
-        description: "Failed to generate AI suggestions. Please try again.",
+        description: `Failed to generate AI suggestions for ${field}. Please try again.`,
         variant: "destructive",
       });
     } finally {
-      setIsGenerating(false);
+      setGenerating(false);
     }
   };
 
@@ -101,23 +101,7 @@ export const EventForm = ({ onSubmit, isSubmitting }: EventFormProps) => {
   return (
     <Card className="max-w-3xl mx-auto">
       <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-2xl font-bold">Create New Event</CardTitle>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={generateSuggestion}
-            disabled={isGenerating}
-          >
-            {isGenerating ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <Wand2 className="mr-2 h-4 w-4" />
-            )}
-            Ask AI
-          </Button>
-        </div>
+        <CardTitle className="text-2xl font-bold">Create New Event</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-8">
@@ -136,6 +120,10 @@ export const EventForm = ({ onSubmit, isSubmitting }: EventFormProps) => {
             onCategoryChange={(category) =>
               setFormData((prev) => ({ ...prev, category }))
             }
+            onGenerateNameClick={() => generateSuggestion('name')}
+            onGenerateDescriptionClick={() => generateSuggestion('description')}
+            isGeneratingName={isGeneratingName}
+            isGeneratingDescription={isGeneratingDescription}
           />
 
           <EventDateTime
