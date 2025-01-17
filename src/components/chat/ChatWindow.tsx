@@ -17,7 +17,6 @@ interface ChatWindowProps {
   onSubmit: (e: React.FormEvent) => void;
   isLoading?: boolean;
 }
-
 const LOADING_MESSAGES = [
   "Consulting the style oracle...",
   "Mixing color potions...",
@@ -35,12 +34,21 @@ const LOADING_MESSAGES = [
 
 ];
 
+const WELCOME_MESSAGE: Message = {
+  id: "welcome",
+  text: "Hi there! I'm your App Genie 🧞. This is an AI app that transforms itself as you talk to me. Words shape not just the conversation, but the entire interface and tone. Want a new look?  Cyberpunk theme? Spongebob vibe? Ask, and watch the UI transform✨. Try something like:\n\n" +
+        "• 'Make it cyberpunk themed'\n" +
+        "• 'Give me a cozy forest vibe'\n" +
+        "• 'Can you make it look like SpongeBob?'",
+  sender: "ai"
+};
+
 export const ChatWindow = ({
   messages,
   input,
   onInputChange,
   onSubmit,
-  isLoading
+  isLoading,
 }: ChatWindowProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [loadingMessageIndex, setLoadingMessageIndex] = useState(0);
@@ -64,8 +72,12 @@ export const ChatWindow = ({
   return (
     <div className="flex h-[500px] flex-col chat-container">
       <div className="flex-1 overflow-y-auto p-4 space-y-4 message-list">
+        <ChatMessage key="welcome" message={WELCOME_MESSAGE} />
         {messages.map((message) => (
-          <ChatMessage key={message.id} message={message} />
+          <ChatMessage 
+            key={message.id} 
+            message={message} 
+          />
         ))}
         <div ref={messagesEndRef} />
         {isLoading && (

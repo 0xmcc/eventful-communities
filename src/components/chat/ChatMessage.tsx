@@ -15,7 +15,7 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
         "message-bubble",
         "flex w-fit flex-col gap-2 rounded-lg px-3 py-2 text-sm",
         "max-w-[60%]",
-        "break-words",
+        "break-words whitespace-pre-wrap",
         message.sender === "user" 
           ? "ml-auto bg-primary text-primary-foreground user-message" 
           : "bg-muted ai-message"

@@ -96,10 +96,10 @@ export const StyleChatModal = () => {
 
           {/* Tabs for switching between chat and theme editor */}
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList>
+            {/* <TabsList>
               <TabsTrigger value="chat" className="modal-tab-button" >Chat</TabsTrigger>
               <TabsTrigger value="editor" className="modal-tab-button" >Theme Editor</TabsTrigger>
-            </TabsList>
+            </TabsList> */}
             {/* Chat Tab */}
             <TabsContent value="chat">
               <ChatWindow

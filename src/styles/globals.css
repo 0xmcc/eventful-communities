@@ -6,4 +6,8 @@
 .dark {
   --popover: 222.2 84% 4.9%; /* Dark background for dark mode */
   --popover-foreground: 210 40% 98%;
+}
+
+.chat-message {
+  white-space: pre-wrap;
 } 
