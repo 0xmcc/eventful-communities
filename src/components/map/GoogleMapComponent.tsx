@@ -18,10 +18,14 @@ const GoogleMapComponent = ({ events }: GoogleMapComponentProps) => {
   // San Francisco coordinates
   const defaultCenter = { lat: 37.7749, lng: -122.4194 };
   
-  const center = events.length > 0
-    ? { lat: events[0].latitude, lng: events[0].longitude }
-    : defaultCenter;
 
+  // Only render markers for events with valid coordinates
+  const validEvents = events.filter(event => 
+    typeof event.latitude === 'number' && 
+    typeof event.longitude === 'number' &&
+    !isNaN(event.latitude) && 
+    !isNaN(event.longitude)
+  );
   return (
     <div className="relative w-full h-full">
       <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY || ''}>
@@ -33,7 +37,7 @@ const GoogleMapComponent = ({ events }: GoogleMapComponentProps) => {
           gestureHandling={'greedy'}
           disableDefaultUI={true}
         >
-          {events.map((event) => (
+          {validEvents.map((event) => (
             <CustomMarker
               key={`marker-${event.id}`}
               position={{ lat: event.latitude, lng: event.longitude }}
