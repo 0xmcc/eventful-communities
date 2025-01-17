@@ -5,6 +5,7 @@ import { PhoneAuthDialog } from "../auth/PhoneAuthDialog";
 import { EmailAuthDialog } from "../auth/EmailAuthDialog";
 import HeaderActions from "./HeaderActions";
 import { useAuthCheck } from "@/hooks/useAuthCheck";
+import { StyleChatModal } from "@/components/chat/StyleChatModal";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -34,6 +35,8 @@ const Layout = ({ children }: LayoutProps) => {
       </header>
       <main className="pt-14 pb-16 md:pb-0">
         {children}
+        <StyleChatModal />
+
       </main>
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-10">
         <Navigation />

@@ -1,44 +1,41 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import Layout from "@/components/layout/Layout";
 import CommunityCard from "@/components/communities/CommunityCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-
-// Dummy data
-const DUMMY_COMMUNITIES = [
-  {
-    id: "1",
-    name: "Tech Enthusiasts",
-    bio: "A community for technology lovers and innovators. Join us to discuss the latest tech trends and share your knowledge!",
-    imageUrl: "https://images.unsplash.com/photo-1498050108023-c5249f4df085",
-    followersCount: 1234,
-  },
-  {
-    id: "2",
-    name: "Creative Arts Hub",
-    bio: "Connect with fellow artists, share your work, and get inspired by amazing creativity from around the world.",
-    imageUrl: "https://images.unsplash.com/photo-1473177104440-ffee2f376098",
-    followersCount: 856,
-  },
-  {
-    id: "3",
-    name: "Business Network",
-    bio: "A professional network for entrepreneurs and business leaders to share insights and opportunities.",
-    imageUrl: "https://images.unsplash.com/photo-1551038247-3d9af20df552",
-    followersCount: 2341,
-  },
-  {
-    id: "4",
-    name: "Education Forum",
-    bio: "Dedicated to lifelong learning and educational resources sharing. Join educators and students alike!",
-    imageUrl: "https://images.unsplash.com/photo-1492321936769-b49830bc1d1e",
-    followersCount: 567,
-  },
-];
+import { supabase } from "@/integrations/supabase/client";
+import { Loader2 } from "lucide-react";
 
 const Communities = () => {
   const [followedCommunities, setFollowedCommunities] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState("all");
+
+  // Add query to fetch communities
+  const { data: communities, isLoading } = useQuery({
+    queryKey: ["communities"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("communities")
+        .select(`
+          *,
+          creator:creator_id (
+            id,
+            username,
+            full_name,
+            avatar_url
+          )
+        `)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        toast.error("Failed to load communities");
+        throw error;
+      }
+
+      return data;
+    },
+  });
 
   const handleFollowToggle = (communityId: string) => {
     setFollowedCommunities((prev) => {
@@ -54,10 +51,10 @@ const Communities = () => {
 
   const displayedCommunities =
     activeTab === "following"
-      ? DUMMY_COMMUNITIES.filter((community) =>
+      ? (communities || []).filter((community) =>
           followedCommunities.includes(community.id)
         )
-      : DUMMY_COMMUNITIES;
+      : communities || [];
 
   return (
     <Layout>
@@ -73,35 +70,55 @@ const Communities = () => {
           </TabsList>
 
           <TabsContent value="all" className="mt-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {displayedCommunities.map((community) => (
-                <CommunityCard
-                  key={community.id}
-                  {...community}
-                  isFollowing={followedCommunities.includes(community.id)}
-                  onFollowToggle={handleFollowToggle}
-                />
-              ))}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="following" className="mt-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {displayedCommunities.length === 0 ? (
-                <p className="text-muted-foreground col-span-full text-center py-8">
-                  You haven't followed any communities yet.
-                </p>
-              ) : (
-                displayedCommunities.map((community) => (
+            {isLoading ? (
+              <div className="flex justify-center py-8">
+                <Loader2 className="h-6 w-6 animate-spin" />
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {displayedCommunities.map((community) => (
                   <CommunityCard
                     key={community.id}
-                    {...community}
+                    id={community.id}
+                    name={community.name}
+                    bio={community.bio}
+                    imageUrl={community.image_url}
+                    creator={community.creator}
                     isFollowing={followedCommunities.includes(community.id)}
                     onFollowToggle={handleFollowToggle}
                   />
-                ))
-              )}
-            </div>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="following" className="mt-6">
+            {isLoading ? (
+              <div className="flex justify-center py-8">
+                <Loader2 className="h-6 w-6 animate-spin" />
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {displayedCommunities.length === 0 ? (
+                  <p className="text-muted-foreground col-span-full text-center py-8">
+                    You haven't followed any communities yet.
+                  </p>
+                ) : (
+                  displayedCommunities.map((community) => (
+                    <CommunityCard
+                      key={community.id}
+                      id={community.id}
+                      name={community.name}
+                      bio={community.bio}
+                      imageUrl={community.image_url}
+                      creator={community.creator}
+                      isFollowing={followedCommunities.includes(community.id)}
+                      onFollowToggle={handleFollowToggle}
+                    />
+                  ))
+                )}
+              </div>
+            )}
           </TabsContent>
         </Tabs>
       </div>

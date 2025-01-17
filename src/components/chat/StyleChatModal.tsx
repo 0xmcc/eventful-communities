@@ -8,13 +8,14 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, Sparkles, Lamp } from "lucide-react";
 import { ChatWindow } from "./ChatWindow";
 import { ThemeEditor } from "../theme/ThemeEditor";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useThemeState } from "@/hooks/useThemeState";
 import { handleChatSubmit } from "./helpers/chatSubmitHandler";
 import { handleStreamingUpdate } from "./helpers/streamingHandler";
+import { GenieIcon } from "@/components/icons/GenieIcon";
 
 interface Message {
   id: string;
@@ -48,8 +49,8 @@ export const StyleChatModal = () => {
     // Switch back to chat tab when streaming is complete
     if (isComplete) {
       console.log('Switching to chat tab');
-      setActiveTab("chat");
       applyTheme(theme);
+      setActiveTab("chat");
     }
   };
 
@@ -73,8 +74,12 @@ export const StyleChatModal = () => {
 
         {/* Dialog Trigger */}
         <DialogTrigger asChild>
-          <Button variant="outline" size="icon">
-            <MessageSquare className="h-4 w-4" />
+          <Button 
+            variant="default" 
+            size="icon"
+            className="fixed bottom-8 right-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 bg-yellow-400 hover:bg-yellow-500 z-50 h-16 w-16 chat-button"
+          >
+            <GenieIcon className="w-12 h-12 text-purple-600 chat-button-icon" />   
           </Button>
         </DialogTrigger>
         {/* Dialog Content */}

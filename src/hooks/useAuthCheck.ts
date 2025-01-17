@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-
+import { useDemoAuth } from "@/config/demoUser";
 export interface AuthCheckResult {
   userProfile: any;
   isLoading: boolean;
 }
 
-export function useAuthCheck(): AuthCheckResult {
+export function useRealAuthCheck(): AuthCheckResult {
   const navigate = useNavigate();
   const [userProfile, setUserProfile] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -69,4 +69,9 @@ export function useAuthCheck(): AuthCheckResult {
   }, [navigate]);
 
   return { userProfile, isLoading };
+}
+
+export function useAuthCheck() {
+  // Simply return the demo auth hook result
+  return useDemoAuth();
 }

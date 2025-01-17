@@ -40,6 +40,8 @@ Chat Interface Elements:
 - .email-auth-dialog-input: Email auth dialog input (border, background)
 - .email-auth-dialog-button: Email auth dialog button (background, hover)
 - .email-auth-dialog-switch-button: Email auth dialog switch button (background, hover)
+- .chat-button: Chat button (background, hover)
+- .chat-button-icon: Chat button icon SVG
 
 Important: Feel free to experiment with font families
 Style properties to focus on:
@@ -69,5 +71,16 @@ Example format:
   },
   ".ai-message": {
     "background-color": "#f5f5f5"
+  }
+}
+  
+Please format all CSS as valid JSON with proper colons between properties and values. For example:
+
+{
+  ".button": {
+    "background-color": "#007bff",
+    ":hover": {
+      "background-color": "#0056b3"
+    }
   }
 }` 

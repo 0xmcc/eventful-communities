@@ -86,7 +86,7 @@ export const useEventSubmission = (profile: Tables<"profiles"> | null) => {
         description: "Event created successfully",
       });
 
-      navigate("/events");
+      navigate("/");
     } catch (error) {
       console.error("Error creating event:", error);
       toast({

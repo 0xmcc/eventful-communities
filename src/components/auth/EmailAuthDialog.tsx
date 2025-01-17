@@ -99,7 +99,7 @@ export function EmailAuthDialog({ isOpen, onClose }: EmailAuthDialogProps) {
           if (!profile || !profile.full_name) {
             navigate('/onboarding');
           } else {
-            navigate('/events');
+            navigate('/');
           }
         }
       } else {

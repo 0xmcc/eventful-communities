@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from "react";
 import { ChatMessage } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Loader2 } from "lucide-react";
 
 interface Message {
   id: string;
@@ -37,6 +38,14 @@ export const ChatWindow = ({
           <ChatMessage key={message.id} message={message} />
         ))}
         <div ref={messagesEndRef} />
+        {isLoading && (
+          <div className="chat-message ai flex items-center gap-2">
+            <div className="animate-spin">
+              <Loader2 className="h-4 w-4" />
+            </div>
+            <span className="text-sm text-muted-foreground">Generating style...</span>
+          </div>
+        )}
       </div>
       <div className="p-4 border-t">
         <ChatInput

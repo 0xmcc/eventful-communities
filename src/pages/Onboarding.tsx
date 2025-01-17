@@ -104,7 +104,7 @@ const Onboarding = () => {
       if (error) throw error;
 
       toast.success("Profile created successfully!");
-      navigate("/events");
+      navigate("/");
     } catch (error: any) {
       toast.error(error.message);
     } finally {

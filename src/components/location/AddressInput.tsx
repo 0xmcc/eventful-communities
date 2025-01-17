@@ -7,50 +7,70 @@ interface AddressInputProps {
   onAddressSelect: (address: string, lat: number, lng: number) => void;
 }
 
+const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+
 export const AddressInput = ({ onAddressSelect }: AddressInputProps) => {
-  const [isApiLoaded, setIsApiLoaded] = useState(false);
+  const [isGoogleLoaded, setIsGoogleLoaded] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
   const { geocodeAddress, isLoading, error } = useGeocoding();
 
   useEffect(() => {
-    loadGoogleMapsApi()
-      .then(() => setIsApiLoaded(true))
-      .catch(console.error);
+    // Load the Google Maps script if it's not already loaded
+    if (!document.querySelector('script[src*="maps.googleapis.com"]')) {
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`;
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
+    }
+
+    const checkGoogleMapsLoaded = () => {
+      console.log('Checking Google Maps loaded...'); // Debug log
+      if (window.google && window.google.maps && window.google.maps.places) {
+        console.log('Google Maps is loaded!'); // Debug log
+        setIsGoogleLoaded(true);
+        return;
+      }
+      setTimeout(checkGoogleMapsLoaded, 100);
+    };
+
+    checkGoogleMapsLoaded();
   }, []);
 
   useEffect(() => {
-    if (isApiLoaded && inputRef.current) {
-      autocompleteRef.current = new google.maps.places.Autocomplete(
-        inputRef.current,
-        { types: ["address"] }
-      );
+    console.log('isGoogleLoaded changed:', isGoogleLoaded); // Debug log
+    if (!isGoogleLoaded || !inputRef.current) return;
 
-      autocompleteRef.current.addListener("place_changed", () => {
-        const place = autocompleteRef.current?.getPlace();
-        if (place?.geometry?.location) {
-          const lat = place.geometry.location.lat();
-          const lng = place.geometry.location.lng();
-          onAddressSelect(place.formatted_address || "", lat, lng);
-        }
-      });
-    }
-  }, [isApiLoaded, onAddressSelect]);
+    const autocomplete = new window.google.maps.places.Autocomplete(
+      inputRef.current,
+      {
+        types: ['address'],
+        componentRestrictions: { country: 'US' },
+      }
+    );
 
-  if (!isApiLoaded) {
-    return <div>Loading Google Maps...</div>;
-  }
+    autocomplete.addListener("place_changed", () => {
+      const place = autocomplete.getPlace();
+      if (place?.geometry?.location) {
+        const lat = place.geometry.location.lat();
+        const lng = place.geometry.location.lng();
+        onAddressSelect(place.formatted_address || "", lat, lng);
+      }
+    });
+  }, [isGoogleLoaded, onAddressSelect]); 
 
   return (
     <div className="space-y-2">
       <Input
         ref={inputRef}
         type="text"
-        placeholder="Enter location"
+        placeholder={isGoogleLoaded ? "Enter location" : "Loading..."}
         className="w-full"
-        disabled={isLoading}
+        disabled={!isGoogleLoaded || isLoading}
       />
       {error && <p className="text-sm text-red-500">{error}</p>}
     </div>
   );
 };
+
+export default AddressInput;

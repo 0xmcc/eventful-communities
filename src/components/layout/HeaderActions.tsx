@@ -3,6 +3,7 @@ import { PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import UserMenu from "./UserMenu";
 import { Tables } from "@/integrations/supabase/types";
+import { handleDemoLogin } from "@/utils/demoAuth";
 
 interface HeaderActionsProps {
   userProfile: Tables<"profiles"> | null;
@@ -24,11 +25,17 @@ const HeaderActions = ({ userProfile, onOpenEmailAuth, onOpenPhoneAuth }: Header
         <PlusCircle className="h-4 w-4 mr-2 header-actions-button-icon" />
         Create
       </Button>
-      <UserMenu
-        userProfile={userProfile}
-        onOpenEmailAuth={onOpenEmailAuth}
-        onOpenPhoneAuth={onOpenPhoneAuth}
-      />
+      
+   
+  
+        <UserMenu
+          userProfile={userProfile}
+          onOpenEmailAuth={onOpenEmailAuth}
+          onOpenPhoneAuth={onOpenPhoneAuth}
+        />
+      
+
+   
     </div>
   );
 };

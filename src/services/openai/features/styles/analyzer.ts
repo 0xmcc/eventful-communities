@@ -5,7 +5,7 @@ const STYLE_KEYWORDS = [
   'style', 'theme', 'color', 'design', 'look',
   'dark', 'light', 'modern', 'background',
   'bigger', 'smaller', 'wider', 'narrower',
-  'padding', 'margin', 'layout', 'i want'
+  'padding', 'margin', 'layout', 'i want', 'give me', 'vibe'
 ];
 
 
