@@ -49,9 +49,10 @@ export const StyleChatModal = () => {
 //    console.log('Streaming update complete', isComplete);
     // Switch back to chat tab when streaming is complete
     if (isComplete) {
-      console.log('Switching to chat tab');
+      console.log('Switching to chat tab and applying theme');
       applyTheme(theme);
       setActiveTab("chat");
+      applyTheme(accumulatedCSS);
       // Close the modal after a short delay
     //   setTimeout(() => {
     //     setOpen(false);
@@ -90,7 +91,7 @@ export const StyleChatModal = () => {
         {/* Dialog Content */}
         <DialogContent className="sm:max-w-[800px] chat-bg-background">
           <DialogHeader>
-            <DialogTitle>Style Chat</DialogTitle>
+            <DialogTitle className="chat-title-text">Style Chat</DialogTitle>
           </DialogHeader>
 
           {/* Tabs for switching between chat and theme editor */}

@@ -34,7 +34,7 @@ const CreateEvent = () => {
 
   return (
     <Layout>
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 create-event-container">
         <EventForm onSubmit={handleSubmit} isSubmitting={isSubmitting} />
       </div>
     </Layout>

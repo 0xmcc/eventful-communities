@@ -30,12 +30,6 @@ export const handleStreamingUpdate = ({
   // Update editor with clean CSS
   updateTheme(chunk, accumulatedCSS);
   
-  // Switch to editor tab on first update
-//   if (!hasTabSwitched.current) {
-//     setActiveTab("editor");
-//     hasTabSwitched.current = true;
-//   }
-//  console.log('Handler - Streaming update complete', isComplete);
   // Apply CSS when streaming completes
   if (isComplete) {
     try {

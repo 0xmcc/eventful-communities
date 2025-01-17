@@ -54,7 +54,7 @@ const EventsList = () => {
 
   return (
     <div className="events-container container mx-auto px-4 py-8">
-      <div className="events-header flex justify-between items-center mb-8">
+      <div className="events-header-text flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Events</h1>
         <StyleChatModal />
       </div>    

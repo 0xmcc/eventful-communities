@@ -27,12 +27,15 @@ export const generateChatResponse = async (
        engaging, and occasionally playful. Feel free to use relevant emojis and maintain an upbeat tone.`;
 
     if (hasStyleRequest) {
-      console.log("Generating styles", hasStyleRequest);
-      styles = await generateStylesWithAI({ 
-        prompt: message,
-        onChunk
-      });
-//      console.log("Styles generated", styles);
+      try {
+        console.log("Generating styles", hasStyleRequest);
+        styles = await generateStylesWithAI({ 
+          prompt: message,
+          onChunk
+        });
+      } catch (error) {
+        console.error("Style generation failed:", error);
+      }
     }
     
     console.log("Generating AI message", message);

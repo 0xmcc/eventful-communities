@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { validateCSSJson, applyDynamicCSS } from "@/utils/cssUpdater";
-
+import { jsonrepair } from 'jsonrepair';
 interface ThemeStateOptions {
   onValidationError?: (error: string) => void;
   onChange?: (theme: string) => void;
@@ -48,12 +48,16 @@ export const useThemeState = (
   };
 
   const applyTheme = (themeJson: string) => {
-    console.log('Attempting to apply theme:', themeJson);
-    const rules = validateTheme(themeJson);
+//    console.log('Attempting to apply theme:', themeJson);
+	const repairedJson = jsonrepair(themeJson);
+	if (themeJson !== repairedJson) {
+		console.log('Theme JSON was repaired');
+	}
+    const rules = validateTheme(repairedJson);
     if (rules) {
-      console.log('Theme validated, applying rules:', rules);
+//      console.log('Theme validated, applying rules:', rules);
       applyDynamicCSS(rules);
-      options.onChange?.(themeJson);
+      options.onChange?.(repairedJson);
     } else {
       console.error('Theme validation failed');
     }

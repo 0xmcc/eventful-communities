@@ -20,6 +20,7 @@ export const handleChatMessage = async (
       analysis.hasStyleRequest,
       onChunk
     );
+    console.log("AI generated message", aiMessage.message);
 //    console.log("AI generated styles", aiMessage.styles);
 
     // 4. Return complete response

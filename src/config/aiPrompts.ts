@@ -23,12 +23,12 @@ User Interface Elements:
 - .header-bg-background: Header background
 - .logo-text: Logo text
 - .events-container-bg-background: Events container background
-- .events-header: Events header (background, text color)
+- .events-header-text: Events header text (background, text color)
 - .mobile-sheet-trigger: Mobile sheet trigger (background, text color)
 - .event-count: Event count (background, text color)
 - .event-count-icon: Event count icon SVG
 - .search-input: Search input (background, text color)
-
+- .chat-title-text: Chat title text (background, text color)
 - .event-card-bg-background: Event card (background, text color)
 - .event-card-text-color: Event card text color
 - .event-card-text-category: Event card category text color
@@ -39,7 +39,7 @@ User Interface Elements:
 - .community-card-primary-text: Community card primary text
 - .community-card-secondary-text: Community card secondary text
 - .community-card-button: Community card button 
-- .header-actions-button: Header actions button (background, hover)
+- .header-actions-button: Header actions button (background, hover, text color)
 - .header-actions-button-icon: Header actions button icon SVG
 - .email-auth-dialog-content: Email auth dialog content (background, border, shadow)
 - .email-auth-dialog-title: Email auth dialog title
@@ -56,6 +56,7 @@ User Interface Elements:
 - .create-event-card: Create event card (background, border, shadow)
 - .create-event-primary-text: Create event primary text
 - .create-event-primary-button: Create event primary button (background, hover)
+- .hover:text-primary: Hover text primary
 - .text-primary: Text primary (hover)
 - .text-secondary: Text secondary (hover)
 - .text-muted-foreground: Text muted foreground (hover)
@@ -63,6 +64,8 @@ User Interface Elements:
 
 Important: Feel free to experiment with font families
 Also on buttons, focus on hover states
+For any CSS selectors that have the word 'text' in the name, do not give it a background color
+
 Style properties to focus on:
 - backgroundColor
 - color (text color)

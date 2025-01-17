@@ -30,6 +30,8 @@ const LOADING_MESSAGES = [
   "Brewing the perfect palette...",
   "Channeling creative energy...",
   "Asking the devs to do something...",
+  "Lighting incense...",
+  "Making a sacrifice to the design gods...",
 
 ];
 

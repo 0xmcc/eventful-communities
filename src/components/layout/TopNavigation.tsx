@@ -14,7 +14,7 @@ const TopNavigation = ({ isAuthenticated }: TopNavigationProps) => {
   ];
 
   return (
-    <nav className="flex items-center space-x-6 top-navigation-bg-background">
+    <nav className="flex items-center space-x-6">
       {tabs.map(({ icon: Icon, label, path }) => {
         if (path === "/create-event" && !isAuthenticated) {
           return null;

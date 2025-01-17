@@ -44,8 +44,15 @@ export const processStreamLine = (
   }
 
   try {
-    // 2. Parse the line as JSON
-    const json = JSON.parse(line.substring(6)) as OpenAIResponse;
+    // Add proper data prefix handling
+    const dataPrefix = 'data: ';
+    if (!line.trim().startsWith(dataPrefix)) {
+      return { newJSON: accumulatedJSON, openBraces, closeBraces, isComplete: false };
+    }
+    
+    // 2. Parse the line as JSON with proper trimming
+    const jsonStr = line.substring(line.indexOf(dataPrefix) + dataPrefix.length).trim();
+    const json = JSON.parse(jsonStr) as OpenAIResponse;
     const content = json.choices[0]?.delta?.content || '';
     
     // 3. Count braces and build new JSON

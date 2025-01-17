@@ -97,11 +97,11 @@ export const applyDynamicCSS = (cssRules: CSSRules): void => {
     console.log('Applying CSS rules:', cssRules);
     const styleElement = getOrCreateStyleElement();
     const cssString = formatCSSRules(cssRules);
-    console.log('Formatted CSS string:', cssString);
+//    console.log('Formatted CSS string:', cssString);
     styleElement.textContent = cssString;
     
     // Verify the style element content
-    console.log('Style element content:', styleElement.textContent);
+//    console.log('Style element content:', styleElement.textContent);
     console.log('Successfully applied dynamic CSS');
   } catch (error) {
     console.error('Failed to apply dynamic CSS:', error);

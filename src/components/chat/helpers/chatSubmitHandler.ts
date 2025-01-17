@@ -61,6 +61,7 @@ export const handleChatSubmit = async (
   try {
     // Process message and get AI response
     const response = await handleChatMessage(input, handleStreamingUpdate);
+    console.log("AI response received", response);
     if (!response) {
       throw new Error("No response received from chat service");
     }
