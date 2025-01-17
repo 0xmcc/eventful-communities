@@ -1,31 +1,26 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   APIProvider, 
   Map
 } from '@vis.gl/react-google-maps';
 import { Tables } from "@/integrations/supabase/types";
-import CustomMarker from './CustomMarker';
+import { EventMarker } from './EventMarker';
 
 interface GoogleMapComponentProps {
   events: Tables<"events">[];
 }
 
 const GoogleMapComponent = ({ events }: GoogleMapComponentProps) => {
-  useEffect(() => {
-    console.log("GoogleMap events:", events);
-  }, [events]);
-
-  // San Francisco coordinates
+  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const defaultCenter = { lat: 37.7749, lng: -122.4194 };
-  
 
-  // Only render markers for events with valid coordinates
   const validEvents = events.filter(event => 
     typeof event.latitude === 'number' && 
     typeof event.longitude === 'number' &&
     !isNaN(event.latitude) && 
     !isNaN(event.longitude)
   );
+
   return (
     <div className="relative w-full h-full">
       <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY || ''}>
@@ -36,13 +31,22 @@ const GoogleMapComponent = ({ events }: GoogleMapComponentProps) => {
           className="w-full h-full"
           gestureHandling={'greedy'}
           disableDefaultUI={true}
+          onClick={() => setSelectedEventId(null)}
         >
           {validEvents.map((event) => (
-            <CustomMarker
+            <EventMarker
               key={`marker-${event.id}`}
-              position={{ lat: event.latitude, lng: event.longitude }}
-              title={event.name}
-              imageUrl={event.cover_image_url}
+              event={{
+                id: event.id,
+                name: event.name,
+                image: event.cover_image_url,
+                location: { 
+                  lat: event.latitude, 
+                  lng: event.longitude 
+                }
+              }}
+              isSelected={selectedEventId === event.id}
+              onClick={() => setSelectedEventId(event.id)}
             />
           ))}
         </Map>

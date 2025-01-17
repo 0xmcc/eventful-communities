@@ -89,7 +89,8 @@ export const StyleChatModal = () => {
           </Button>
         </DialogTrigger>
         {/* Dialog Content */}
-        <DialogContent className="sm:max-w-[800px] chat-bg-background">
+        {/* if you want, you can go back to chat-container or chat-bg-background */}
+        <DialogContent className="sm:max-w-[800px] message-list">
           <DialogHeader>
             <DialogTitle className="chat-title-text">Style Chat</DialogTitle>
           </DialogHeader>

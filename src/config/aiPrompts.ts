@@ -54,6 +54,7 @@ User Interface Elements:
 - .btm-navigation-icon-text: Bottom navigation icon text
 - .create-event-container: Create event container (background, border, shadow)
 - .create-event-card: Create event card (background, border, shadow)
+- .create-event-input: Create event input (background, border, shadow)
 - .create-event-primary-text: Create event primary text
 - .create-event-primary-button: Create event primary button (background, hover)
 - .hover:text-primary: Hover text primary
@@ -61,7 +62,8 @@ User Interface Elements:
 - .text-secondary: Text secondary (hover)
 - .text-muted-foreground: Text muted foreground (hover)
 - .text-muted-foreground/50: Text muted foreground/50 (hover)
-
+- .map-info-window-primary-text: Map info window primary text
+- .map-info-window-bg-background: Map info window background
 Important: Feel free to experiment with font families
 Also on buttons, focus on hover states
 For any CSS selectors that have the word 'text' in the name, do not give it a background color
