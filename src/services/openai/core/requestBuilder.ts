@@ -1,7 +1,7 @@
 import { STYLE_GENERATION_PROMPT } from '@/config/aiPrompts';
 
 export const prepareRequestBody = (prompt: string, stream: boolean = false, systemPrompt: string = STYLE_GENERATION_PROMPT) => {
-  return JSON.stringify({
+  return {
     model: "gpt-4",
     messages: [
       {
@@ -16,5 +16,5 @@ export const prepareRequestBody = (prompt: string, stream: boolean = false, syst
     temperature: 0.7,
     max_tokens: 2000,
     stream: stream
-  });
+  };
 }; 

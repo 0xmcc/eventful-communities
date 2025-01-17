@@ -1,5 +1,6 @@
 import { makeOpenAIRequest } from '@/services/openai/core/client';
-
+//imoprt system prompt from @aiPr
+import { STYLE_GENERATION_PROMPT } from '@/config/aiPrompts';
 /**
  * Parameters for generating AI styles with streaming support
  * @property prompt - The text description of styles to generate
@@ -19,8 +20,8 @@ export const generateStylesWithAI = async ({ prompt, onChunk }: OpenAIStreamPara
   try {
     if (!prompt.trim()) { throw new Error("Please provide a style description");  }
       
-    const result = await makeOpenAIRequest(prompt, { stream: true, onChunk });    
-    console.log('Accumulated JSON:', result);
+    const result = await makeOpenAIRequest({ prompt, stream: true, onChunk, systemPrompt: STYLE_GENERATION_PROMPT });    
+
     return result;
 
   } catch (error) {
@@ -35,5 +36,3 @@ const handleError = (error: unknown): never => {
   throw new Error("An unknown error occurred while generating styles");
 };
 
-// Export the types from the parent directory
-export * from '@/services/openai/types';

@@ -15,7 +15,10 @@ export const makeOpenAIRequest = async ({
     onChunk, 
     systemPrompt 
 }: OpenAIRequestOptions) => {
-  const body = prepareRequestBody(prompt, stream, systemPrompt);
+  const body = prepareRequestBody(prompt, stream, systemPrompt)
+
+
+  console.log("Making OpenAI request", body);   
   const response = await fetch(API_ENDPOINT, {
     method: "POST",
     headers: {
@@ -26,9 +29,10 @@ export const makeOpenAIRequest = async ({
   });
 
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error?.message || "Failed to connect to OpenAI API");
+    const errorData = await response.json();
+    throw new Error(errorData.error?.message || `OpenAI API error: ${response.status}`);
   }
+  console.log("STREAM RESPONSE", stream, body.stream, prompt);
   return stream 
     ? handleStreamResponse(response, onChunk)
     : handleJSONResponse(response);

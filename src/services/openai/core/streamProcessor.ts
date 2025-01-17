@@ -100,34 +100,35 @@ export const handleStream = async (
   reader: ReadableStreamDefaultReader<string>,
   onChunk?: (chunk: string) => void
 ): Promise<string> => {
+    console.log("Handling stream");
+    // 1. Initialize variables to track the JSON state
+    let accumulatedJSON = "";
+    let openBraces = 0;
+    let closeBraces = 0;
+    let isComplete = false;
 
-  // 1. Initialize variables to track the JSON state
-  let accumulatedJSON = "";
-  let openBraces = 0;
-  let closeBraces = 0;
-  let isComplete = false;
+    // 2. Read the stream until completion
+    while (!isComplete) {
 
-  // 2. Read the stream until completion
-  while (!isComplete) {
+        const { value, done } = await reader.read();
+        if (done) break;
 
-    const { value, done } = await reader.read();
-    if (done) break;
-
-    // 3. Split the value into lines and process each line
-    const lines = value.split('\n');
-    for (const line of lines) {
-      // 4. Process each line and update the JSON state
-      const result = processStreamLine(line, accumulatedJSON, openBraces, closeBraces, onChunk);
-      accumulatedJSON = result.newJSON;
-      openBraces = result.openBraces;
-      closeBraces = result.closeBraces;
-      isComplete = result.isComplete;
-      
-      // 5. If the JSON is complete, break the loop
-      if (isComplete) break;
+        // 3. Split the value into lines and process each line
+        const lines = value.split('\n');
+        for (const line of lines) {
+        // 4. Process each line and update the JSON state
+        const result = processStreamLine(line, accumulatedJSON, openBraces, closeBraces, onChunk);
+//        console.log("Processed stream line", result);
+        accumulatedJSON = result.newJSON;
+        openBraces = result.openBraces;
+        closeBraces = result.closeBraces;
+        isComplete = result.isComplete;
+        
+        // 5. If the JSON is complete, break the loop
+        if (isComplete) break;
+        }
     }
-  }
 
-  // 6. Return the accumulated JSON
-  return accumulatedJSON;
+    // 6. Return the accumulated JSON
+    return accumulatedJSON;
 }; 

@@ -7,11 +7,8 @@ const STYLE_KEYWORDS = [
   'bigger', 'smaller', 'wider', 'narrower',
   'padding', 'margin', 'layout', 'i want'
 ];
-const SYSTEM_PROMPT = `You are a style request analyzer. Your task is to determine if the user is asking for UI/style changes.
-You must respond with ONLY the word 'true' or 'false' - no punctuation, no explanation.
-Example responses:
-true
-false`;
+
+
 /**
  * Determines if a message is requesting style changes
  * @param message - The user's message to analyze
@@ -24,16 +21,21 @@ export const isStyleRequest = async (message: string): Promise<boolean> => {
   if (STYLE_KEYWORDS.some(keyword => lowerMessage.includes(keyword))) {
     return true;
   }
+  const systemPrompt = `You are a style request analyzer. Your task is to determine if the user is asking for UI/style changes.
+  You must respond with ONLY the word 'true' or 'false' - no punctuation, no explanation.
+  Example responses:
+  true
+  false`;   
 
   try {
-
 
     const response = await makeOpenAIRequest({ 
       prompt: message,
       stream: false,
-      systemPrompt: SYSTEM_PROMPT
+      systemPrompt: systemPrompt
     });
 
+    console.log("Style analysis response", response);
     return response.trim().toLowerCase() === 'true';
   } catch (error) {
     console.error('Style analysis error:', error);

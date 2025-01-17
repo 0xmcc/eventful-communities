@@ -1,3 +1,5 @@
+import { handleStream } from './streamProcessor';
+
 /**
  * Gets the stream response from the OpenAI API and returns the accumulated response,
  * calling the onChunk callback with each chunk of the response.
@@ -6,32 +8,27 @@
  * @returns A Promise that resolves to the accumulated response from the OpenAI API
  */
 export const handleStreamResponse = async (response: Response, onChunk?: (chunk: string) => void) => {
-  // 1. Get the reader from the response
-  const reader = response.body?.pipeThrough(new TextDecoderStream()).getReader();
-  if (!reader) throw new Error("Failed to get response reader");
+    console.log("Handling stream response");
+    if (!response.body) {
+        throw new Error("Failed to get response body");
+      }
+    
+    // 1. Get the reader from the response
+    const reader = response.body?.pipeThrough(new TextDecoderStream()).getReader();
+    if (!reader) throw new Error("Failed to get response reader");
 
-  // 2. Initialize an empty string to accumulate the response
-  let accumulated = '';
-  
-  try {
-    // 3. Read the response in chunks
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      // 4. Append the chunk to the accumulated response
-      accumulated += value;
-      // 5. Call the onChunk callback with the chunk
-      onChunk?.(value);
+    try {
+        // 2. Use our streamProcessor to handle the stream
+        const result = await handleStream(reader, onChunk);
+        // 3. Return the processed result
+        return result;
+    } finally {
+        reader.releaseLock();
     }
-    // 6. Return the accumulated response
-    return accumulated;
-  } finally {
-    // 7. Release the reader lock
-    reader.releaseLock();
-  }
 };
 
 export const handleJSONResponse = async (response: Response) => {
+    console.log("Handling JSON response");
   const data = await response.json();
   return data.choices[0].message.content;
 }; 

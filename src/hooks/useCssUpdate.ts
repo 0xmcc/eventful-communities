@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useToast } from "@/components/ui/use-toast";
 import { validateCSSJson, applyDynamicCSS } from "@/utils/cssUpdater";
-import { generateStylesWithAI } from "@/services/openai/index";
+import { generateStylesWithAI } from "@/services/openai/features/styles/generator";
 
 export const useCssUpdate = (
   styleDescription: string, 

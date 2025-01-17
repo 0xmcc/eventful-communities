@@ -25,7 +25,7 @@ Chat Interface Elements:
 - .message-input-button: The button to send messages (icon only, padding)
 - .border-t: The border at the bottom of the chat interface
 - .chat-bg-background: The background color for the chat interface
-
+- .theme-editor-textarea: The textarea for the theme editor (min-height, resize-none)
 
 
 

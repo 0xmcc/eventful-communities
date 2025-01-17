@@ -8,6 +8,7 @@ const STORAGE_KEY = "theme-editor-content";
 
 interface ThemeEditorProps {
   className?: string;
+  initialContent?: string;
 }
 
 export const ThemeEditor = ({ className }: ThemeEditorProps) => {
@@ -42,7 +43,7 @@ export const ThemeEditor = ({ className }: ThemeEditorProps) => {
         value={isGenerating ? generatedCss : styleDescription}
         onChange={(e) => setStyleDescription(e.target.value)}
         placeholder="Describe the styles you want..."
-        className="min-h-[100px] resize-none"
+        className="min-h-[100px] resize-none theme-editor-textarea"
         disabled={isGenerating}
       />
       <div className="flex gap-2">
