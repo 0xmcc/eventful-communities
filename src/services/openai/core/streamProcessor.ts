@@ -66,6 +66,7 @@ export const processStreamLine = (
     if (isComplete) {
       try {
         const parsed = JSON.parse(newJSON);
+        console.log("Parsed JSON:", parsed);
         const extracted = extractCSSProperties(parsed);
         onChunk?.(JSON.stringify(extracted, null, 2), newJSON, true);
       } catch (e) {

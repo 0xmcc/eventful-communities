@@ -29,6 +29,7 @@ export const StyleChatModal = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("chat");
   const hasTabSwitched = useRef(false);
+  const [open, setOpen] = useState(false);
   
   const { theme, handleStreamingUpdate: updateTheme, applyTheme, resetTheme } = useThemeState();
 
@@ -51,7 +52,11 @@ export const StyleChatModal = () => {
       console.log('Switching to chat tab');
       applyTheme(theme);
       setActiveTab("chat");
-    }
+      // Close the modal after a short delay
+    //   setTimeout(() => {
+    //     setOpen(false);
+    //   }, 1500); // 1.5 second delay to let user see the completion
+     }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -70,7 +75,7 @@ export const StyleChatModal = () => {
 
   return (
 
-      <Dialog>
+      <Dialog open={open} onOpenChange={setOpen}>
 
         {/* Dialog Trigger */}
         <DialogTrigger asChild>

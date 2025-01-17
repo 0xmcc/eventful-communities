@@ -13,7 +13,7 @@ const Navigation = () => {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 pb-safe-area-inset-bottom z-50">
+    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 pb-safe-area-inset-bottom z-50 btm-navigation-bg-background">
       <div className="flex justify-around items-center h-16">
         {tabs.map(({ icon: Icon, label, path }) => (
           <Link
@@ -23,11 +23,11 @@ const Navigation = () => {
               activeTab === path
                 ? "text-primary"
                 : "text-gray-500 hover:text-primary"
-            }`}
+            } btm-navigation-icon`}
             onClick={() => setActiveTab(path)}
           >
-            <Icon className="w-6 h-6" />
-            <span className="text-xs">{label}</span>
+            <Icon className="w-6 h-6 btm-navigation-icon-svg" />
+            <span className="text-xs btm-navigation-icon-text">{label}</span>
           </Link>
         ))}
       </div>

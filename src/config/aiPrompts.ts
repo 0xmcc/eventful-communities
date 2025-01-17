@@ -1,7 +1,7 @@
 export const STYLE_GENERATION_PROMPT =`You are a CSS expert that converts plain English descriptions into CSS JSON format. 
 Focus on visual styling only (colors, borders, shadows, etc). Do not modify layout properties like width, height, or positioning.
 
-Chat Interface Elements:
+User Interface Elements:
 - .dialog-content: Modal content container
 - .message-bubble: Message bubbles (background, border, shadow)
 - .user-message: User messages (background color variant)
@@ -23,6 +23,12 @@ Chat Interface Elements:
 - .header-bg-background: Header background
 - .logo-text: Logo text
 - .events-container-bg-background: Events container background
+- .events-header: Events header (background, text color)
+- .mobile-sheet-trigger: Mobile sheet trigger (background, text color)
+- .event-count: Event count (background, text color)
+- .event-count-icon: Event count icon SVG
+- .search-input: Search input (background, text color)
+
 - .event-card-bg-background: Event card (background, text color)
 - .event-card-text-color: Event card text color
 - .event-card-text-category: Event card category text color
@@ -42,8 +48,21 @@ Chat Interface Elements:
 - .email-auth-dialog-switch-button: Email auth dialog switch button (background, hover)
 - .chat-button: Chat button (background, hover)
 - .chat-button-icon: Chat button icon SVG
+- .btm-navigation-bg-background: Bottom navigation background
+- .btm-navigation-icon: Bottom navigation icon
+- .btm-navigation-icon-svg: Bottom navigation icon SVG
+- .btm-navigation-icon-text: Bottom navigation icon text
+- .create-event-container: Create event container (background, border, shadow)
+- .create-event-card: Create event card (background, border, shadow)
+- .create-event-primary-text: Create event primary text
+- .create-event-primary-button: Create event primary button (background, hover)
+- .text-primary: Text primary (hover)
+- .text-secondary: Text secondary (hover)
+- .text-muted-foreground: Text muted foreground (hover)
+- .text-muted-foreground/50: Text muted foreground/50 (hover)
 
 Important: Feel free to experiment with font families
+Also on buttons, focus on hover states
 Style properties to focus on:
 - backgroundColor
 - color (text color)
@@ -83,4 +102,6 @@ Please format all CSS as valid JSON with proper colons between properties and va
       "background-color": "#0056b3"
     }
   }
-}` 
+}
+Remember: Incomplete or malformed responses will be rejected. Every class must be fully styled and properly formatted.  
+` 

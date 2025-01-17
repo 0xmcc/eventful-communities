@@ -50,19 +50,19 @@ const MobileEventSheet = () => {
           variant="secondary"
         >
           <span className="event-count">{eventCount} Events</span>
-          <ChevronUp className="icon-chevron w-4 h-4 transition-transform group-hover:-translate-y-0.5" />
+          <ChevronUp className="icon-chevron w-4 h-4 transition-transform group-hover:-translate-y-0.5 event-count-icon" />
         </Button>
       </SheetTrigger>
       <SheetContent 
         side="bottom" 
-        className="mobile-sheet h-[80vh] w-full !border-t-0 rounded-t-xl"
+        className="mobile-sheet h-[80vh] w-full !border-t-0 rounded-t-xl events-container-bg-background"
       >
         <div className="mobile-sheet-content space-y-4">
           <div className="mobile-sheet-search flex gap-2">
             <Input 
               type="search" 
               placeholder="Search events..." 
-              className="search-input flex-1"
+              className="search-input flex-1 search-input"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />

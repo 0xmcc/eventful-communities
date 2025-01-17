@@ -19,18 +19,32 @@ export const useThemeState = (
   };
 
   const validateTheme = (themeJson: string) => {
-    const rules = validateCSSJson(themeJson);
-    if (!rules) {
-      const error = "Invalid theme format";
-      options.onValidationError?.(error);
-    //   toast({
-    //     title: "Validation Error",
-    //     description: error,
-    //     variant: "destructive",
-    //   });
+    try {
+      const rules = validateCSSJson(themeJson);
+      if (!rules) {
+        const error = "Invalid theme format. Please check for syntax errors.";
+        options.onValidationError?.(error);
+        toast({
+          title: "Theme Validation Error",
+		  // add a cute error message that encourages the user to try again with a new message
+          description: "Oops! Looks like there was an error with your theme. Please try again with a new message.",
+          variant: "destructive",
+          duration: 3000,
+        });
+        console.log("Toast should be showing");
+        return null;
+      }
+      return rules;
+    } catch (error) {
+      toast({
+        title: "Theme Validation Error",
+        description: `Failed to parse theme: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        variant: "destructive",
+        duration: 3000,
+      });
+      console.log("Error toast should be showing", error);
       return null;
     }
-    return rules;
   };
 
   const applyTheme = (themeJson: string) => {

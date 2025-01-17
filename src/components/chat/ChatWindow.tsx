@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { ChatMessage } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -18,6 +18,21 @@ interface ChatWindowProps {
   isLoading?: boolean;
 }
 
+const LOADING_MESSAGES = [
+  "Consulting the style oracle...",
+  "Mixing color potions...",
+  "Weaving CSS magic...",
+  "Summoning design inspiration...",
+  "Polishing pixels...",
+  "Calculating golden ratios...",
+  "Aligning divs perfectly...",
+  "Sprinkling design fairy dust...",
+  "Brewing the perfect palette...",
+  "Channeling creative energy...",
+  "Asking the devs to do something...",
+
+];
+
 export const ChatWindow = ({
   messages,
   input,
@@ -26,10 +41,23 @@ export const ChatWindow = ({
   isLoading
 }: ChatWindowProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [loadingMessageIndex, setLoadingMessageIndex] = useState(0);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  useEffect(() => {
+    if (!isLoading) return;
+
+    const interval = setInterval(() => {
+      setLoadingMessageIndex((prev) => 
+        prev === LOADING_MESSAGES.length - 1 ? 0 : prev + 1
+      );
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [isLoading]);
 
   return (
     <div className="flex h-[500px] flex-col chat-container">
@@ -39,11 +67,13 @@ export const ChatWindow = ({
         ))}
         <div ref={messagesEndRef} />
         {isLoading && (
-          <div className="chat-message ai flex items-center gap-2">
+          <div className="chat-message ai flex items-center gap-2 animate-fade-in">
             <div className="animate-spin">
               <Loader2 className="h-4 w-4" />
             </div>
-            <span className="text-sm text-muted-foreground">Generating style...</span>
+            <span className="text-sm text-muted-foreground">
+              {LOADING_MESSAGES[loadingMessageIndex]}
+            </span>
           </div>
         )}
       </div>

@@ -13,6 +13,7 @@ export const AddressInput = ({ onAddressSelect }: AddressInputProps) => {
   const [isGoogleLoaded, setIsGoogleLoaded] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const { geocodeAddress, isLoading, error } = useGeocoding();
+  const checkIntervalRef = useRef<number | null>(null);
 
   useEffect(() => {
     // Load the Google Maps script if it's not already loaded
@@ -25,20 +26,32 @@ export const AddressInput = ({ onAddressSelect }: AddressInputProps) => {
     }
 
     const checkGoogleMapsLoaded = () => {
-      console.log('Checking Google Maps loaded...'); // Debug log
       if (window.google && window.google.maps && window.google.maps.places) {
-        console.log('Google Maps is loaded!'); // Debug log
         setIsGoogleLoaded(true);
-        return;
+        if (checkIntervalRef.current) {
+          clearInterval(checkIntervalRef.current);
+          checkIntervalRef.current = null;
+        }
+        return true;
       }
-      setTimeout(checkGoogleMapsLoaded, 100);
+      return false;
     };
 
-    checkGoogleMapsLoaded();
-  }, []);
+    // Only set up interval if Google isn't loaded yet
+    if (!checkGoogleMapsLoaded()) {
+      checkIntervalRef.current = window.setInterval(checkGoogleMapsLoaded, 500);
+    }
+
+    // Cleanup
+    return () => {
+      if (checkIntervalRef.current) {
+        clearInterval(checkIntervalRef.current);
+        checkIntervalRef.current = null;
+      }
+    };
+  }, []); // Empty dependency array since we only want this to run once on mount
 
   useEffect(() => {
-    console.log('isGoogleLoaded changed:', isGoogleLoaded); // Debug log
     if (!isGoogleLoaded || !inputRef.current) return;
 
     const autocomplete = new window.google.maps.places.Autocomplete(

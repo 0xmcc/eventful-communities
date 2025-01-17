@@ -59,7 +59,7 @@ export const EventBasicInfo = ({
             value={name}
             onChange={(e) => onNameChange(e.target.value)}
             required
-            className="text-4xl font-bold border-none px-0 placeholder:text-muted-foreground/50"
+            className="text-4xl font-bold border-none px-0 placeholder:text-muted-foreground/50 create-event-input"
           />
         </div>
         <Button
@@ -71,9 +71,9 @@ export const EventBasicInfo = ({
           className="shrink-0"
         >
           {isGeneratingName ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Loader2 className="h-4 w-4 animate-spin create-event-icon" />
           ) : (
-            <Wand2 className="h-4 w-4" />
+            <Wand2 className="h-4 w-4 create-event-icon" />
           )}
         </Button>
       </div>
@@ -85,7 +85,7 @@ export const EventBasicInfo = ({
             <Textarea
               id="description"
               placeholder="Tell people what your event is about"
-              className="min-h-[120px] text-base"
+              className="min-h-[120px] text-base create-event-input"
               value={description}
               onChange={(e) => onDescriptionChange(e.target.value)}
               required
@@ -100,9 +100,9 @@ export const EventBasicInfo = ({
             className="shrink-0 self-start"
           >
             {isGeneratingDescription ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Loader2 className="h-4 w-4 animate-spin create-event-icon" />
             ) : (
-              <Wand2 className="h-4 w-4" />
+              <Wand2 className="h-4 w-4 create-event-icon" />
             )}
           </Button>
         </div>
@@ -111,12 +111,12 @@ export const EventBasicInfo = ({
       <div className="space-y-2">
         <Label>Category</Label>
         <Select value={category} onValueChange={onCategoryChange} required>
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="w-full create-event-input">
             <SelectValue placeholder="Select category" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="create-event-input">
             {EVENT_CATEGORIES.map((category) => (
-              <SelectItem key={category} value={category}>
+              <SelectItem key={category} value={category} className="create-event-input">
                 {category}
               </SelectItem>
             ))}

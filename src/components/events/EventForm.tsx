@@ -99,9 +99,9 @@ export const EventForm = ({ onSubmit, isSubmitting }: EventFormProps) => {
   };
 
   return (
-    <Card className="max-w-3xl mx-auto">
+    <Card className="max-w-3xl mx-auto create-event-card">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold">Create New Event</CardTitle>
+        <CardTitle className="text-2xl font-bold create-event-primary-text">Create New Event</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-8">
@@ -133,6 +133,7 @@ export const EventForm = ({ onSubmit, isSubmitting }: EventFormProps) => {
             onDateChange={setDate}
             onTimeChange={setTime}
             onDurationChange={setDuration}
+
           />
 
           <EventLocation
@@ -149,7 +150,7 @@ export const EventForm = ({ onSubmit, isSubmitting }: EventFormProps) => {
 
           <Button
             type="submit"
-            className="w-full"
+            className="w-full create-event-primary-button"
             disabled={isSubmitting}
             size="lg"
           >
