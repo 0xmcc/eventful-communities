@@ -9,13 +9,12 @@ const TopNavigation = ({ isAuthenticated }: TopNavigationProps) => {
   const location = useLocation();
 
   const tabs = [
-    { icon: MapPin, label: "Map", path: "/map" },
-    { icon: Calendar, label: "Events", path: "/events" },
+    { icon: MapPin, label: "Events", path: "/map" },
     { icon: Users, label: "Communities", path: "/communities" },
   ];
 
   return (
-    <nav className="flex items-center space-x-6">
+    <nav className="flex items-center space-x-6 top-navigation-bg-background">
       {tabs.map(({ icon: Icon, label, path }) => {
         if (path === "/create-event" && !isAuthenticated) {
           return null;
@@ -28,10 +27,10 @@ const TopNavigation = ({ isAuthenticated }: TopNavigationProps) => {
               location.pathname === path
                 ? "text-primary bg-primary/10"
                 : "text-gray-600 hover:text-primary hover:bg-primary/5"
-            }`}
+            } top-navigation-link`}
           >
-            <Icon className="w-5 h-5" />
-            <span className="font-medium">{label}</span>
+            <Icon className="w-5 h-5 top-navigation-link-icon" />
+            <span className="font-medium top-navigation-link-text">{label}</span>
           </Link>
         )
       })}

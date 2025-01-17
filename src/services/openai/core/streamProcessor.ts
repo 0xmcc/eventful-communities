@@ -32,7 +32,7 @@ export const processStreamLine = (
   accumulatedJSON: string,
   openBraces: number,
   closeBraces: number,
-  onChunk?: (chunk: string) => void
+  onChunk?: (chunk: string, accumulatedJSON: string, isComplete: boolean) => void
 ): StreamLineResult => {
   // 1. Handle special cases
   if (line.length === 0 || line.startsWith(':')) {
@@ -67,14 +67,14 @@ export const processStreamLine = (
       try {
         const parsed = JSON.parse(newJSON);
         const extracted = extractCSSProperties(parsed);
-        onChunk?.(JSON.stringify(extracted, null, 2));
+        onChunk?.(JSON.stringify(extracted, null, 2), newJSON, true);
       } catch (e) {
-        onChunk?.(content);
+        onChunk?.(content, newJSON, true);
       }
     } 
     // 6. If the JSON is not complete, just append the line to the accumulated JSON and call the onChunk callback with the content
     else {
-      onChunk?.(content);
+      onChunk?.(content, newJSON);
     }
 
     // 7. Return the new JSON, the new open and close braces counts, and the completion status
@@ -98,7 +98,7 @@ export const processStreamLine = (
  */
 export const handleStream = async (
   reader: ReadableStreamDefaultReader<string>,
-  onChunk?: (chunk: string) => void
+  onChunk?: (chunk: string, accumulatedJSON: string, isComplete: boolean) => void
 ): Promise<string> => {
     console.log("Handling stream");
     // 1. Initialize variables to track the JSON state
@@ -111,21 +111,29 @@ export const handleStream = async (
     while (!isComplete) {
 
         const { value, done } = await reader.read();
-        if (done) break;
+        if (done) {
+            console.log("STREAM COMPLETE")
+            // Signal completion on stream end
+            onChunk?.('', accumulatedJSON, true);
+            break;
+        }
 
         // 3. Split the value into lines and process each line
         const lines = value.split('\n');
         for (const line of lines) {
-        // 4. Process each line and update the JSON state
-        const result = processStreamLine(line, accumulatedJSON, openBraces, closeBraces, onChunk);
-//        console.log("Processed stream line", result);
-        accumulatedJSON = result.newJSON;
-        openBraces = result.openBraces;
-        closeBraces = result.closeBraces;
-        isComplete = result.isComplete;
+            // 4. Process each line and update the JSON state
+            const result = processStreamLine(line, accumulatedJSON, openBraces, closeBraces, onChunk);
+            accumulatedJSON = result.newJSON;
+            openBraces = result.openBraces;
+            closeBraces = result.closeBraces;
+            isComplete = result.isComplete;
         
-        // 5. If the JSON is complete, break the loop
-        if (isComplete) break;
+            // 5. If the JSON is complete, break the loop
+            if (isComplete) {
+                console.log("STREAM COMPLETE")
+                onChunk?.('', accumulatedJSON, true);
+                break;
+            }
         }
     }
 

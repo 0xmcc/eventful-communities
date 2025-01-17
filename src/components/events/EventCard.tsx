@@ -12,11 +12,11 @@ interface EventCardProps {
 
 const EventCard = ({ event }: EventCardProps) => {
   return (
-    <Card className="overflow-hidden bg-secondary hover:bg-secondary/90 transition-colors border-0">
+    <Card className="overflow-hidden bg-secondary hover:bg-secondary/90 transition-colors border-0 event-card-bg-background">
       <div className="flex gap-4 p-4">
         <div className="flex-1 space-y-4">
           {/* Date and Time */}
-          <div className="flex items-center text-secondary-foreground/80">
+          <div className="flex items-center text-secondary-foreground/80 event-card-text-color">
             <Calendar className="w-4 h-4 mr-2" />
             <span className="text-sm">
               {format(new Date(event.start_time), "MMM d'th' 'at' h:mm a")}
@@ -24,7 +24,7 @@ const EventCard = ({ event }: EventCardProps) => {
           </div>
 
           {/* Event Title */}
-          <h3 className="font-semibold text-xl text-secondary-foreground">
+          <h3 className="font-semibold text-xl text-secondary-foreground event-card-text-color">
             {event.name}
           </h3>
 
@@ -36,24 +36,24 @@ const EventCard = ({ event }: EventCardProps) => {
                 {event.creator.full_name?.charAt(0) || event.creator.username?.charAt(0)}
               </AvatarFallback>
             </Avatar>
-            <span className="text-sm text-secondary-foreground/80">
+            <span className="text-sm text-secondary-foreground/80 event-card-text-color">
               {event.creator.full_name || event.creator.username}
             </span>
           </div>
 
           {/* Location */}
-          <div className="flex items-center text-sm text-secondary-foreground/80">
+          <div className="flex items-center text-sm text-secondary-foreground/80 event-card-text-color">
             <MapPin className="w-4 h-4 mr-2" />
             <span className="line-clamp-1">{event.address}</span>
           </div>
 
           {/* Category Tags */}
           <div className="flex gap-2">
-            <span className="text-sm px-3 py-1 rounded-full bg-primary/20 text-primary">
+            <span className="text-sm px-3 py-1 rounded-full bg-primary/20 text-primary event-card-text-category">
               {event.category}
             </span>
             {event.is_public && (
-              <span className="text-sm px-3 py-1 rounded-full bg-red-500/20 text-red-400">
+              <span className="text-sm px-3 py-1 rounded-full bg-red-500/20 text-red-400 event-card-text-category">
                 Free
               </span>
             )}

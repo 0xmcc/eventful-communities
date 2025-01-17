@@ -49,17 +49,17 @@ const UserMenu = ({ userProfile, onOpenEmailAuth, onOpenPhoneAuth }: UserMenuPro
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm">
+        <Button variant="ghost" size="sm" className="header-actions-button">
           Sign In
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuItem onClick={onOpenEmailAuth}>
-          <Mail className="h-4 w-4 mr-2" />
+        <DropdownMenuItem onClick={onOpenEmailAuth} className="header-actions-button">
+          <Mail className="h-4 w-4 mr-2 header-actions-button-icon" />
           Sign in with Email
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={onOpenPhoneAuth}>
-          <Phone className="h-4 w-4 mr-2" />
+        <DropdownMenuItem onClick={onOpenPhoneAuth} className="header-actions-button">
+          <Phone className="h-4 w-4 mr-2 header-actions-button-icon" />
           Sign in with Phone
         </DropdownMenuItem>
       </DropdownMenuContent>

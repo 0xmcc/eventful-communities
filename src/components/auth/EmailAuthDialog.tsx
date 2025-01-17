@@ -115,9 +115,9 @@ export function EmailAuthDialog({ isOpen, onClose }: EmailAuthDialogProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] email-auth-dialog-content">
         <DialogHeader>
-          <DialogTitle>{isSignUp ? 'Sign up with Email' : 'Sign in with Email'}</DialogTitle>
+          <DialogTitle className="email-auth-dialog-title">{isSignUp ? 'Sign up with Email' : 'Sign in with Email'}</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <Input
@@ -125,24 +125,26 @@ export function EmailAuthDialog({ isOpen, onClose }: EmailAuthDialogProps) {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            className="email-auth-dialog-input"
           />
           <Input
             placeholder="Password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            className="email-auth-dialog-input"
           />
           <Button 
             onClick={handleSubmit}
             disabled={isLoading}
-            className="w-full"
+            className="w-full email-auth-dialog-button"
           >
             {isLoading ? 'Processing...' : (isSignUp ? 'Sign Up' : 'Sign In')}
           </Button>
           <Button
             variant="ghost"
             onClick={() => setIsSignUp(!isSignUp)}
-            className="w-full"
+            className="w-full email-auth-dialog-switch-button"
           >
             {isSignUp ? 'Already have an account? Sign In' : "Don't have an account? Sign Up"}
           </Button>

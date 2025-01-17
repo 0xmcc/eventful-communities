@@ -17,9 +17,9 @@ const Layout = ({ children }: LayoutProps) => {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-10">
+      <header className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-10 header-bg-background">
         <div className="relative flex items-center justify-between h-14 px-4 max-w-7xl mx-auto">
-          <span className="font-['Space_Grotesk'] text-2xl font-bold text-primary">
+          <span className="font-['Space_Grotesk'] text-2xl font-bold text-primary logo-text">
             vently
           </span>
           <div className="hidden md:flex flex-1 justify-center">

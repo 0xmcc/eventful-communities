@@ -3,6 +3,7 @@ import {
   Dialog,
   DialogContent,
   DialogHeader,
+  DialogOverlay,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -11,8 +12,10 @@ import { MessageSquare } from "lucide-react";
 import { ChatWindow } from "./ChatWindow";
 import { ThemeEditor } from "../theme/ThemeEditor";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useCssUpdate } from "@/hooks/useCssUpdate";
+import { useThemeState } from "@/hooks/useThemeState";
 import { handleChatSubmit } from "./helpers/chatSubmitHandler";
+import { handleStreamingUpdate } from "./helpers/streamingHandler";
+
 interface Message {
   id: string;
   text: string;
@@ -24,31 +27,35 @@ export const StyleChatModal = () => {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("chat");
-  const [editorContent, setEditorContent] = useState("");
-  const hasTabSwitched = useRef(false);  // Add ref to track tab switch
+  const hasTabSwitched = useRef(false);
+  
+  const { theme, handleStreamingUpdate: updateTheme, applyTheme, resetTheme } = useThemeState();
 
-  // Handler for streaming style updates
-  /**
-   * Handle streaming style updates by updating the theme editor in real-time
-   * @param chunk - The chunk of style to update
-   * @returns void
-   */
-  const handleStreamingUpdate = (chunk: string) => {
-    // Update theme editor in real-time with chunks
-    console.log("Streaming update", chunk);
-    setEditorContent(prev => prev + chunk);
-    
-    // Only switch tab once during streaming
-    if (!hasTabSwitched.current) {
-      setActiveTab("editor");
-      hasTabSwitched.current = true;
+
+
+  const handleStreamingWrapper = (chunk: string, accumulatedCSS: string, isComplete?: boolean) => {
+    handleStreamingUpdate({
+      chunk,
+      accumulatedCSS,
+      isComplete,
+      updateTheme,
+      applyTheme,
+      setActiveTab,
+      hasTabSwitched,
+      currentTheme: theme
+    });
+//    console.log('Streaming update complete', isComplete);
+    // Switch back to chat tab when streaming is complete
+    if (isComplete) {
+      console.log('Switching to chat tab');
+      setActiveTab("chat");
+      applyTheme(theme);
     }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
-    // Clear editor content before new submission
-    setEditorContent("");
-    hasTabSwitched.current = false;  // Reset the tab switch tracker
+    hasTabSwitched.current = false;
+    resetTheme(); // Reset theme before starting new request
     
     handleChatSubmit(e, {
       input,
@@ -56,53 +63,53 @@ export const StyleChatModal = () => {
       setMessages,
       setInput,
       setIsLoading,
-      handleStreamingUpdate,
+      handleStreamingUpdate: handleStreamingWrapper,
     });
   };
 
-  // Use the existing CSS update hook
-  const {
-    handleGenerateCSS,
-    isGenerating,
-  } = useCssUpdate(
-    input,
-    () => {}, // We don't need to update textarea here
-    undefined // No need for streaming updates in chat
-  );
-
-
   return (
-    <div className="chat-bg-background">
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="icon">
-          <MessageSquare className="h-4 w-4" />
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[800px]">
-        <DialogHeader>
-          <DialogTitle>Style Chat</DialogTitle>
-        </DialogHeader>
-        <Tabs className="mt-4" value={activeTab} onValueChange={setActiveTab}>
-          <TabsList>
-            <TabsTrigger value="chat">Chat</TabsTrigger>
-            <TabsTrigger value="editor">Theme Editor</TabsTrigger>
-          </TabsList>
-          <TabsContent value="chat">
-            <ChatWindow
-              messages={messages}
-              input={input}
-              onInputChange={setInput}
-              onSubmit={handleSubmit}
-              isLoading={isLoading}
-            />
-          </TabsContent>
-          <TabsContent value="editor">
-            <ThemeEditor initialContent={editorContent} />
-          </TabsContent>
-        </Tabs>
-      </DialogContent>
-    </Dialog>
-    </div>
+
+      <Dialog>
+
+        {/* Dialog Trigger */}
+        <DialogTrigger asChild>
+          <Button variant="outline" size="icon">
+            <MessageSquare className="h-4 w-4" />
+          </Button>
+        </DialogTrigger>
+        {/* Dialog Content */}
+        <DialogContent className="sm:max-w-[800px] chat-bg-background">
+          <DialogHeader>
+            <DialogTitle>Style Chat</DialogTitle>
+          </DialogHeader>
+
+          {/* Tabs for switching between chat and theme editor */}
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList>
+              <TabsTrigger value="chat" className="modal-tab-button" >Chat</TabsTrigger>
+              <TabsTrigger value="editor" className="modal-tab-button" >Theme Editor</TabsTrigger>
+            </TabsList>
+            {/* Chat Tab */}
+            <TabsContent value="chat">
+              <ChatWindow
+                messages={messages}
+                input={input}
+                onInputChange={setInput}
+                onSubmit={handleSubmit}
+                isLoading={isLoading}
+              />
+            </TabsContent>
+
+            {/* Theme Editor Tab */}
+            <TabsContent value="editor">
+              <ThemeEditor 
+                initialContent={theme}
+                onApplyTheme={applyTheme}
+              />
+            </TabsContent>
+          </Tabs>
+        </DialogContent>
+      </Dialog>
+
   );
 }; 

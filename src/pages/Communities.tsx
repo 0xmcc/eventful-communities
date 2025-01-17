@@ -61,15 +61,15 @@ const Communities = () => {
 
   return (
     <Layout>
-      <div className="container py-6 space-y-6">
+      <div className="container py-6 space-y-6 communities-container-bg-background">
         <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Communities</h1>
+          <h1 className="text-2xl font-bold communities-text-color">Communities</h1>
         </div>
 
         <Tabs defaultValue="all" onValueChange={setActiveTab}>
           <TabsList>
-            <TabsTrigger value="all">All Communities</TabsTrigger>
-            <TabsTrigger value="following">Following</TabsTrigger>
+            <TabsTrigger value="all" className="communities-tab-button">All Communities</TabsTrigger>
+            <TabsTrigger value="following" className="communities-tab-button">Following</TabsTrigger>
           </TabsList>
 
           <TabsContent value="all" className="mt-6">

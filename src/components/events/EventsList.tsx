@@ -57,14 +57,7 @@ const EventsList = () => {
       <div className="events-header flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Events</h1>
         <StyleChatModal />
-      </div>
-
-      <div className="theme-editor-section mb-8">
-        <h2 className="text-2xl font-bold mb-4">Customize Theme</h2>
-        <ThemeEditor className="max-w-2xl" />
-      </div>
-
-      
+      </div>    
 
       <EventsGrid
         events={filteredEvents}
