@@ -4,51 +4,57 @@ import { Textarea } from "@/components/ui/textarea";
 import { useCssUpdate } from "@/hooks/useCssUpdate";
 import { Loader2 } from "lucide-react";
 
-const STORAGE_KEY = "theme-editor-content";
 
 interface ThemeEditorProps {
   className?: string;
-  initialContent?: string;
+  initialContent: string;
+  onContentChange?: (content: string) => void;
 }
 
-export const ThemeEditor = ({ className }: ThemeEditorProps) => {
-  // Initialize from localStorage if available
-  const [styleDescription, setStyleDescription] = React.useState(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    return saved || "";
-  });
-  const [generatedCss, setGeneratedCss] = React.useState("");
-  
+export const ThemeEditor = ({ 
+  className, 
+  initialContent,
+  onContentChange 
+}: ThemeEditorProps) => {
+  // Local state for editing
+  const [localContent, setLocalContent] = React.useState(initialContent);
+
+  // Sync with parent's content
+  useEffect(() => {
+    setLocalContent(initialContent);
+  }, [initialContent]);
+
   const {
     isGenerating,
     handleGenerateCSS,
     handleCSSUpdate,
   } = useCssUpdate(
-    styleDescription,
-    setGeneratedCss,
-    (chunk: string) => {
-      setGeneratedCss(prev => prev + chunk);
-    }
+    localContent,
+    setLocalContent,
+    undefined // No need for streaming here as it's handled by parent
   );
 
-  // Save to localStorage whenever content changes
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, styleDescription);
-  }, [styleDescription]);
+  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newContent = e.target.value;
+    setLocalContent(newContent);
+    onContentChange?.(newContent);
+  };
+
+  const handleApplyCSS = () => {
+    handleCSSUpdate(localContent);
+  };
 
   return (
     <div className={`space-y-4 ${className}`}>
       <Textarea
-        data-theme-editor
-        value={isGenerating ? generatedCss : styleDescription}
-        onChange={(e) => setStyleDescription(e.target.value)}
-        placeholder="Describe the styles you want..."
+        value={localContent}
+        onChange={handleTextareaChange}
+        placeholder="Your theme will appear here..."
         className="min-h-[100px] resize-none theme-editor-textarea"
         disabled={isGenerating}
       />
       <div className="flex gap-2">
         <Button
-          data-generate-css
           onClick={handleGenerateCSS}
           variant="secondary"
           className="flex-1"
@@ -64,7 +70,7 @@ export const ThemeEditor = ({ className }: ThemeEditorProps) => {
           )}
         </Button>
         <Button
-          onClick={() => handleCSSUpdate(generatedCss)}
+          onClick={handleApplyCSS}
           variant="default"
           className="flex-1"
           disabled={isGenerating}
