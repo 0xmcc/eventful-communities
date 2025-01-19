@@ -36,7 +36,7 @@ const LOADING_MESSAGES = [
 
 const WELCOME_MESSAGE: Message = {
   id: "welcome",
-  text: "Hi there! I'm your App Genie 🧞. This is an AI app that transforms itself as you talk to me. Want a new look?  Cyberpunk theme? Spongebob vibe? Try something like:\n\n" +
+  text: "Hi there! I'm your App Genie 🧞. Want to give eVently a new look?  Cyberpunk theme? Spongebob vibe? Try something like:\n\n" +
         "• 'Make it cyberpunk themed'\n" +
         "• 'Give me a cozy forest vibe'\n" +
         "• 'Can you make it look like SpongeBob?'",

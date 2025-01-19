@@ -3,6 +3,7 @@ import { Calendar, MapPin } from "lucide-react";
 import { format } from "date-fns";
 import { Tables } from "@/integrations/supabase/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useNavigate } from "react-router-dom";
 
 interface EventCardProps {
   event: Tables<"events"> & {
@@ -11,8 +12,18 @@ interface EventCardProps {
 }
 
 const EventCard = ({ event }: EventCardProps) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    console.log('Navigating to:', `/events/${event.id}`);
+    navigate(`/events/${event.id}`);
+  };
+
   return (
-    <Card className="overflow-hidden bg-secondary hover:bg-secondary/90 transition-colors border-0 event-card-bg-background">
+    <Card 
+      className="overflow-hidden bg-secondary hover:bg-secondary/90 transition-colors border-0 event-card-bg-background cursor-pointer" 
+      onClick={handleClick}
+    >
       <div className="flex gap-4 p-4">
         <div className="flex-1 space-y-4">
           {/* Date and Time */}

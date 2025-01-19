@@ -4,11 +4,13 @@ import EventsGrid from "./EventsGrid";
 import { ThemeEditor } from "@/components/theme/ThemeEditor";
 import { useEvents } from "./useEvents";
 import { StyleChatModal } from "@/components/chat/StyleChatModal";
+import { useNavigate } from 'react-router-dom';
 
 const EventsList = () => {
   const [dateFilter, setDateFilter] = useState<string | null>(null);
   
   const { data: events, isLoading, error } = useEvents();
+  const navigate = useNavigate();
 
   const getDateRange = (filter: string) => {
     const now = new Date();
@@ -52,6 +54,10 @@ const EventsList = () => {
     );
   });
 
+  const handleEventClick = (eventId: string) => {
+    navigate(`/events/${eventId}`);
+  };
+
   return (
     <div className="events-container container mx-auto px-4 py-8">
       <div className="events-header-text flex justify-between items-center mb-8">
@@ -63,6 +69,7 @@ const EventsList = () => {
         events={filteredEvents}
         isLoading={isLoading}
         error={error}
+        onEventClick={handleEventClick}
       />
     </div>
   );

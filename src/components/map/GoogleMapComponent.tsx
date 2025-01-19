@@ -5,6 +5,7 @@ import {
 } from '@vis.gl/react-google-maps';
 import { Tables } from "@/integrations/supabase/types";
 import { EventMarker } from './EventMarker';
+import { useNavigate } from 'react-router-dom';
 
 interface GoogleMapComponentProps {
   events: Tables<"events">[];
@@ -12,7 +13,27 @@ interface GoogleMapComponentProps {
 
 const GoogleMapComponent = ({ events }: GoogleMapComponentProps) => {
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
+  const navigate = useNavigate();
   const defaultCenter = { lat: 37.7749, lng: -122.4194 };
+
+  const handleViewDetails = (eventId: string) => {
+    console.log('Navigating to:', `/events/${eventId}`);
+    navigate(`/events/${eventId}`);
+  };
+
+  const handleMapClick = (e: google.maps.MapMouseEvent) => {
+    console.log('Map clicked:', e.domEvent);
+    // Only close if clicking on the map itself, not on markers or info windows
+    if (e.domEvent.target instanceof HTMLElement) {
+      console.log('Target:', e.domEvent.target);
+      const isMarkerClick = e.domEvent.target.closest('.map-marker') !== null;
+      const isInfoWindowClick = e.domEvent.target.closest('.map-info-window-bg-background') !== null;
+      
+      if (!isMarkerClick && !isInfoWindowClick) {
+        setSelectedEventId(null);
+      }
+    }
+  };
 
   const validEvents = events.filter(event => 
     typeof event.latitude === 'number' && 
@@ -31,7 +52,15 @@ const GoogleMapComponent = ({ events }: GoogleMapComponentProps) => {
           className="w-full h-full"
           gestureHandling={'greedy'}
           disableDefaultUI={true}
-          onClick={() => setSelectedEventId(null)}
+          onClick={handleMapClick}
+          options={{
+            clickableIcons: false,
+            draggable: false,
+            zoomControl: false,
+            scrollwheel: false,
+            disableDoubleClickZoom: true,
+            streetViewControl: false
+          }}
         >
           {validEvents.map((event) => (
             <EventMarker
@@ -47,6 +76,7 @@ const GoogleMapComponent = ({ events }: GoogleMapComponentProps) => {
               }}
               isSelected={selectedEventId === event.id}
               onClick={() => setSelectedEventId(event.id)}
+              onViewDetails={() => handleViewDetails(event.id)}
             />
           ))}
         </Map>
