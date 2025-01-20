@@ -17,7 +17,7 @@ const TopNavigation = ({ isAuthenticated }: TopNavigationProps) => {
   ];
 
   return (
-    <div className="flex items-center justify-between w-full px-4">
+    <div className="flex items-center justify-between w-full px-4 top-navigation-bg-background">
       {/* Left section with navigation */}
       <nav className="flex items-center space-x-1">
         {tabs.map(({ icon: Icon, label, path }) => (

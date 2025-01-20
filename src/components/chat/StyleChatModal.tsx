@@ -30,6 +30,7 @@ export const StyleChatModal = () => {
   const [activeTab, setActiveTab] = useState("chat");
   const hasTabSwitched = useRef(false);
   const [open, setOpen] = useState(false);
+  const [showTapMe, setShowTapMe] = useState(true);
   
   const { theme, handleStreamingUpdate: updateTheme, applyTheme, resetTheme } = useThemeState();
 
@@ -76,23 +77,37 @@ export const StyleChatModal = () => {
 
   return (
 
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog 
+        open={open} 
+        onOpenChange={(isOpen) => {
+          setOpen(isOpen);
+          if (isOpen) setShowTapMe(false);
+        }}
+      >
 
         {/* Dialog Trigger */}
         <DialogTrigger asChild>
-          <Button 
-            variant="default" 
-            size="icon"
-            className="fixed bottom-8 right-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 bg-yellow-400 hover:bg-yellow-500 z-50 h-16 w-16 chat-button"
-          >
-            <GenieIcon className="w-12 h-12 text-purple-600 chat-button-icon" />   
-          </Button>
+          <div className="fixed bottom-4 right-4 flex flex-col items-center">
+            <Button 
+              variant="default" 
+              size="icon"
+              className="rounded-full shadow-lg hover:shadow-xl transition-all duration-200 bg-yellow-400 hover:bg-yellow-500 z-50 h-16 w-16 chat-button"
+            >
+              <GenieIcon className="w-12 h-12 text-purple-600 chat-button-icon" />   
+            </Button>
+            {showTapMe && (
+              <span className="text-xs mt-1 text-muted-foreground animate-bounce">Tap Me!</span>
+            )}
+          </div>
         </DialogTrigger>
         {/* Dialog Content */}
         {/* if you want, you can go back to chat-container or chat-bg-background */}
         <DialogContent className="sm:max-w-[800px] message-list">
           <DialogHeader>
-            <DialogTitle className="chat-title-text">Style Chat</DialogTitle>
+            <DialogTitle className="chat-title-text">
+              Start Here
+              <p className="text-sm text-muted-foreground mt-1">I want to show you how I can transform this page. Ask me to redesign the app's theme - try "Make it look cyberpunk" or "Add more red"</p>
+            </DialogTitle>
           </DialogHeader>
 
           {/* Tabs for switching between chat and theme editor */}

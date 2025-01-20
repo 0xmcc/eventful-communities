@@ -1,11 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import EventsList from "./EventsList";
-import { ChevronUp } from "lucide-react";
+import { ChevronUp, ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ThemeEditor } from "@/components/theme/ThemeEditor";
+import { EventCountButton } from "./EventCountButton";
 import {
   Select,
   SelectContent,
@@ -46,7 +47,7 @@ const MobileEventSheet = () => {
     <Sheet>
       <SheetTrigger asChild>
         <Button 
-          className="mobile-sheet-trigger fixed bottom-0 left-0 right-0 z-50 gap-2 group h-14 rounded-none events-container-bg-background rounded-t-xl"
+          className="mobile-sheet-trigger fixed bottom-0 left-0 right-0 z-90 gap-2 group h-14 rounded-none events-container-bg-background rounded-t-xl"
           variant="secondary"
         >
           <span className="event-count">{eventCount} Events</span>
@@ -55,11 +56,14 @@ const MobileEventSheet = () => {
       </SheetTrigger>
       <SheetContent 
         side="bottom" 
-        className="mobile-sheet h-[80vh] w-full !border-t-0 rounded-t-xl events-container-bg-background"
+        className="mobile-sheet h-[80vh] w-full !border-t-0 rounded-t-xl events-container-bg-background [&_button[type='button']]:hidden"
       >
-        <div>
-          
+        <div className="flex items-center justify-center gap-2 mb-4 text-muted-foreground"
+                  onClick={() => setOpen(false)}>
+          <span className="event-count">{eventCount} Events</span>
+          <ChevronDown className="w-4 h-4 transition-transform group-hover:-translate-y-0.5" />
         </div>
+  
         <div className="mobile-sheet-content space-y-4">
           <div className="mobile-sheet-search flex gap-2">
             <Input 

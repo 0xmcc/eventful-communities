@@ -20,8 +20,8 @@ const Layout = ({ children }: LayoutProps) => {
 
 //  const ventlyLogo = require('@/assets/ventlyLogo.png');
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <div className="min-h-screen flex flex-col top-navigation-bg-background">
+      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 top-navigation-bg-background">
         <div className="relative flex items-center justify-between h-14 px-4 max-w-7xl mx-auto md:px-2">
           <Link to="/" className="flex items-center">
             <img src={ventlyLogo} alt="vently logo" className="w-10 h-10" />
