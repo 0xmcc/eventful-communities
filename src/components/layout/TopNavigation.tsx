@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
-import { MapPin, Calendar, Users } from "lucide-react";
+import { MapPin, Calendar, Users, ChevronDown, Compass, Map, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface TopNavigationProps {
   isAuthenticated: boolean;
@@ -9,17 +10,17 @@ const TopNavigation = ({ isAuthenticated }: TopNavigationProps) => {
   const location = useLocation();
 
   const tabs = [
-    { icon: MapPin, label: "Events", path: "/map" },
+    { icon: Compass, label: "Events", path: "/map" },
+    { icon: Map, label: "Feed", path: "/feed" },
     { icon: Users, label: "Communities", path: "/communities" },
+    { icon: Plus, label: "Create", path: "/create-event" },
   ];
 
   return (
-    <nav className="flex items-center space-x-6">
-      {tabs.map(({ icon: Icon, label, path }) => {
-        if (path === "/create-event" && !isAuthenticated) {
-          return null;
-        }
-        return (
+    <div className="flex items-center justify-between w-full px-4">
+      {/* Left section with navigation */}
+      <nav className="flex items-center space-x-1">
+        {tabs.map(({ icon: Icon, label, path }) => (
           <Link
             key={path}
             to={path}
@@ -30,11 +31,23 @@ const TopNavigation = ({ isAuthenticated }: TopNavigationProps) => {
             } top-navigation-link`}
           >
             <Icon className="w-5 h-5 top-navigation-link-icon" />
-            <span className="font-medium top-navigation-link-text">{label}</span>
+            <span className="font-medium top-navigation-link-text hidden sm:inline">{label}</span>
           </Link>
-        )
-      })}
-    </nav>
+        ))}
+      </nav>
+
+      {/* Right section with Create Event and Location */}
+      <div className="flex items-center space-x-4 hidden md:flex">
+        <Button 
+          variant="outline" 
+          className="flex items-center space-x-2"
+        >
+          <MapPin className="w-4 h-4" />
+          <span>SF Bay Area</span>
+          <ChevronDown className="w-4 h-4" />
+        </Button>
+      </div>
+    </div>
   );
 };
 

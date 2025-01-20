@@ -1,6 +1,7 @@
 import { AdvancedMarker } from '@vis.gl/react-google-maps';
 import { useAdvancedMarkerRef } from '@vis.gl/react-google-maps';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
 interface EventMarkerProps {
   event: {
@@ -24,11 +25,14 @@ export const EventMarker = ({
   onViewDetails 
 }: EventMarkerProps) => {
   const [markerRef, marker] = useAdvancedMarkerRef();
+  const navigate = useNavigate();
 
   const handleViewDetails = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    console.log('Button clicked'); // Debug log
     onViewDetails();
+    navigate(`/events/${event.id}`);
   };
 
   return (
@@ -37,17 +41,18 @@ export const EventMarker = ({
       {isSelected && (
         <AdvancedMarker
           position={{
-            lat: event.location.lat + 0.007, // Offset slightly north
+            lat: event.location.lat + 0.007,
             lng: event.location.lng
           }}
         >
           <div 
-            className="relative -translate-y-4 map-info-window-bg-background" 
+            className="relative -translate-y-4 map-info-window-bg-background pointer-events-auto z-50" 
             onClick={(e) => e.stopPropagation()}
+            style={{ cursor: 'default' }}
           >
             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2">
               <div 
-                className="bg-white rounded-lg shadow-lg overflow-hidden w-[300px]"
+                className="bg-white rounded-lg shadow-lg overflow-hidden w-[300px] pointer-events-auto"
                 onClick={(e) => e.stopPropagation()}
               >
                 {event.image && (
@@ -58,21 +63,22 @@ export const EventMarker = ({
                   />
                 )}
                 <div 
-                  className="p-3 space-y-2"
-                  onClick={(e) => e.stopPropagation()}
+                  className="p-3 space-y-2 pointer-events-auto"
                 >
                   <h3 className="font-semibold text-lg">{event.name}</h3>
-                  <Button 
-                    className="w-full" 
-                    size="sm"
-                    onClick={handleViewDetails}
-                    type="button"
-                  >
-                    View Details
-                  </Button>
+                  <div className="relative z-50 pointer-events-auto">
+                    <Button 
+                      className="w-full pointer-events-auto relative z-50" 
+                      size="sm"
+                      onClick={handleViewDetails}
+                      type="button"
+                      style={{ cursor: 'pointer' }}
+                    >
+                      View Details
+                    </Button>
+                  </div>
                 </div>
               </div>
-              {/* Arrow pointer */}
               <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white rotate-45 shadow-lg" />
             </div>
           </div>

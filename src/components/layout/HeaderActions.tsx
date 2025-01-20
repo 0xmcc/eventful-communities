@@ -16,15 +16,7 @@ const HeaderActions = ({ userProfile, onOpenEmailAuth, onOpenPhoneAuth }: Header
 
   return (
     <div className="flex items-center space-x-4">
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => navigate('/create-event')}
-        className="header-actions-button"
-      >
-        <PlusCircle className="h-4 w-4 mr-2 header-actions-button-icon" />
-        Create
-      </Button>
+    
       
    
   

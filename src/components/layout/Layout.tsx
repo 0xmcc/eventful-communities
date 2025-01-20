@@ -6,6 +6,8 @@ import { EmailAuthDialog } from "../auth/EmailAuthDialog";
 import HeaderActions from "./HeaderActions";
 import { useAuthCheck } from "@/hooks/useAuthCheck";
 import { StyleChatModal } from "@/components/chat/StyleChatModal";
+import ventlyLogo from '@/assets/ventlyLogo.png';
+import { Link } from "react-router-dom";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -16,14 +18,18 @@ const Layout = ({ children }: LayoutProps) => {
   const [isEmailAuthDialogOpen, setIsEmailAuthDialogOpen] = useState(false);
   const { userProfile, isLoading } = useAuthCheck();
 
+//  const ventlyLogo = require('@/assets/ventlyLogo.png');
   return (
-    <div className="min-h-screen bg-background">
-      <header className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-10 header-bg-background">
-        <div className="relative flex items-center justify-between h-14 px-4 max-w-7xl mx-auto">
-          <span className="font-['Space_Grotesk'] text-2xl font-bold text-primary logo-text">
+    <div className="min-h-screen flex flex-col">
+      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="relative flex items-center justify-between h-14 px-4 max-w-7xl mx-auto md:px-2">
+          <Link to="/" className="flex items-center">
+            <img src={ventlyLogo} alt="vently logo" className="w-10 h-10" />
+          </Link>
+          {/* <span className="font-['Space_Grotesk'] text-2xl font-bold text-primary logo-text">
             vently
-          </span>
-          <div className="hidden md:flex flex-1 justify-center">
+          </span> */}
+          <div className="md:flex flex-1 justify-center">
             <TopNavigation isAuthenticated={!isLoading && !!userProfile} />
           </div>
           <HeaderActions
@@ -33,14 +39,13 @@ const Layout = ({ children }: LayoutProps) => {
           />
         </div>
       </header>
-      <main className="pt-14 pb-16 md:pb-0">
+      <main className="flex-1">
         {children}
         <StyleChatModal />
-
       </main>
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-10">
+      {/* <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-10">
         <Navigation />
-      </div>
+      </div> */}
       <PhoneAuthDialog 
         isOpen={isPhoneAuthDialogOpen} 
         onClose={() => setIsPhoneAuthDialogOpen(false)} 

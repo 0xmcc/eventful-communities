@@ -9,6 +9,8 @@ User Interface Elements:
 - .message-list: Messages container (background)
 - .chat-input: Input field (border, background)
 - .chat-container: Main container (background)
+- .chat-input-textarea: Text input (border, background)
+
 - .message-input: Text input (border, background)
 - .message-input-button: Send button (background, hover states)
 - .border-t: Border styling
@@ -24,7 +26,6 @@ User Interface Elements:
 - .logo-text: Logo text
 - .events-container-bg-background: Events container background
 - .events-header-text: Events header text (background, text color)
-- .mobile-sheet-trigger: Mobile sheet trigger (background, text color)
 - .event-count: Event count (background, text color)
 - .event-count-icon: Event count icon SVG
 - .search-input: Search input (background, text color)
@@ -64,6 +65,17 @@ User Interface Elements:
 - .text-muted-foreground/50: Text muted foreground/50 (hover)
 - .map-info-window-primary-text: Map info window primary text
 - .map-info-window-bg-background: Map info window background
+- .event-detail-bg-background: Event detail background
+- .event-type-badge: Event type badge
+- .event-title-text: Event title text
+- .event-detail-primary-text: Event detail primary text
+- .event-detail-secondary-text: Event detail secondary text
+- .event-detail-description-bg-background: Event detail description background
+- .feed-card: Feed card
+- .feed-container: Feed container
+- .feed-primary-text: Feed primary text
+- .feed-comment-card-text: Feed comment card text
+- .feed-comment-card-hyperlink: Feed comment card hyperlink
 Important: Feel free to experiment with font families
 Also on buttons, focus on hover states
 For any CSS selectors that have the word 'text' in the name, do not give it a background color

@@ -28,7 +28,7 @@ const Map = () => {
       <div className="flex flex-col md:flex-row h-[calc(100vh-3.5rem)]">
         {/* Events Section - Left side on desktop */}
         {!isMobile && (
-          <div className="w-1/2 border-r overflow-auto events-container-bg-background">
+          <div className="w-1/2 border-r overflow-auto">
             <EventsList />
           </div>
         )}

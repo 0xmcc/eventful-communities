@@ -46,7 +46,7 @@ const MobileEventSheet = () => {
     <Sheet>
       <SheetTrigger asChild>
         <Button 
-          className="mobile-sheet-trigger fixed bottom-20 left-1/2 -translate-x-1/2 z-50 gap-2 group"
+          className="mobile-sheet-trigger fixed bottom-0 left-0 right-0 z-50 gap-2 group h-14 rounded-none events-container-bg-background rounded-t-xl"
           variant="secondary"
         >
           <span className="event-count">{eventCount} Events</span>
@@ -55,9 +55,12 @@ const MobileEventSheet = () => {
       </SheetTrigger>
       <SheetContent 
         side="bottom" 
-        className="mobile-sheet h-[80vh] w-full !border-t-0 rounded-t-xl events-container-bg-background overflow-hidden"
+        className="mobile-sheet h-[80vh] w-full !border-t-0 rounded-t-xl events-container-bg-background"
       >
-        <div className="mobile-sheet-content space-y-4 h-full flex flex-col">
+        <div>
+          
+        </div>
+        <div className="mobile-sheet-content space-y-4">
           <div className="mobile-sheet-search flex gap-2">
             <Input 
               type="search" 
@@ -78,7 +81,7 @@ const MobileEventSheet = () => {
               </SelectContent>
             </Select>
           </div>
-          <div className="events-list flex-1 overflow-y-auto">
+          <div className="events-list">
             <EventsList />
           </div>
         </div>

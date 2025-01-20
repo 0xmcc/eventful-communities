@@ -31,7 +31,7 @@ const UserMenu = ({ userProfile, onOpenEmailAuth, onOpenPhoneAuth }: UserMenuPro
                 {userProfile.full_name?.charAt(0) || userProfile.username?.charAt(0)}
               </AvatarFallback>
             </Avatar>
-            <span>{userProfile.full_name || userProfile.username}</span>
+            {/* <span className="hidden md:inline">{userProfile.full_name || userProfile.username}</span> */}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56">

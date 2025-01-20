@@ -8,6 +8,10 @@ import CreateEvent from "./pages/CreateEvent";
 import Map from "./pages/Map";
 import Onboarding from "./pages/Onboarding";
 import EventDetailPage from './pages/EventDetailPage';
+import { Inter } from 'next/font/google'
+import Feed from './pages/Feed';
+// or if you're not using Next.js:
+import '@fontsource/inter';
 
 const queryClient = new QueryClient();
 
@@ -24,6 +28,7 @@ const App = () => (
           <Route path="/map" element={<Navigate to="/" replace />} />
           <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/events/:id" element={<EventDetailPage />} />
+          <Route path="/feed" element={<Feed />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
