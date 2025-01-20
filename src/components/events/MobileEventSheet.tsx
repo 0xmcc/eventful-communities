@@ -18,7 +18,7 @@ import { useState } from "react";
 
 const MobileEventSheet = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  
+  const [open, setOpen] = useState(false);
   const { data: events } = useQuery({
     queryKey: ["events", searchQuery],
     queryFn: async () => {

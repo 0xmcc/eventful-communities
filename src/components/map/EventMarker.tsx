@@ -2,6 +2,7 @@ import { AdvancedMarker } from '@vis.gl/react-google-maps';
 import { useAdvancedMarkerRef } from '@vis.gl/react-google-maps';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 interface EventMarkerProps {
   event: {
@@ -25,14 +26,20 @@ export const EventMarker = ({
   onViewDetails 
 }: EventMarkerProps) => {
   const [markerRef, marker] = useAdvancedMarkerRef();
-  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!marker) return;
+    const listener = marker.addListener('click', (e: google.maps.MapMouseEvent) => {
+      e.stop(); // Prevent event from bubbling to map
+      onClick();
+    });
+    return () => google.maps.event.removeListener(listener);
+  }, [marker, onClick]);
 
   const handleViewDetails = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('Button clicked'); // Debug log
-    onViewDetails();
-    navigate(`/events/${event.id}`);
+    onViewDetails(); // Just call the prop, don't navigate
   };
 
   return (

@@ -16,6 +16,7 @@ import { useThemeState } from "@/hooks/useThemeState";
 import { handleChatSubmit } from "./helpers/chatSubmitHandler";
 import { handleStreamingUpdate } from "./helpers/streamingHandler";
 import { GenieIcon } from "@/components/icons/GenieIcon";
+import { ApiKeyInput } from "./ApiKeyInput";
 
 interface Message {
   id: string;
@@ -31,6 +32,7 @@ export const StyleChatModal = () => {
   const hasTabSwitched = useRef(false);
   const [open, setOpen] = useState(false);
   const [showTapMe, setShowTapMe] = useState(true);
+  const [apiKey, setApiKey] = useState("");
   
   const { theme, handleStreamingUpdate: updateTheme, applyTheme, resetTheme } = useThemeState();
 
@@ -75,6 +77,10 @@ export const StyleChatModal = () => {
     });
   };
 
+  const handleApiKeySave = () => {
+    localStorage.setItem("openai_api_key", apiKey);
+  };
+
   return (
 
       <Dialog 
@@ -105,8 +111,8 @@ export const StyleChatModal = () => {
         <DialogContent className="sm:max-w-[800px] message-list">
           <DialogHeader>
             <DialogTitle className="chat-title-text">
-              Start Here
-              <p className="text-sm text-muted-foreground mt-1">I want to show you how I can transform this page. Ask me to redesign the app's theme - try "Make it look cyberpunk" or "Add more red"</p>
+              Vently Chat
+              {/* <p className="text-sm text-muted-foreground mt-1">I want to show you how I can transform this page. Ask me to redesign the app's theme - try "Make it look cyberpunk" or "Add more red"</p> */}
             </DialogTitle>
           </DialogHeader>
 
@@ -118,6 +124,11 @@ export const StyleChatModal = () => {
             </TabsList> */}
             {/* Chat Tab */}
             <TabsContent value="chat">
+              <ApiKeyInput 
+                apiKey={apiKey}
+                onApiKeyChange={setApiKey}
+                onSave={handleApiKeySave}
+              />
               <ChatWindow
                 messages={messages}
                 input={input}

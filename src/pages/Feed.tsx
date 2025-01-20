@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Layout from "@/components/layout/Layout";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
@@ -7,7 +7,7 @@ import PostForm from "@/components/feed/PostForm";
 import CommentCard from "@/components/feed/CommentCard";
 
 const Feed = () => {
-  const { data: comments, isLoading, error } = useQuery({
+  const { data: comments = [], isLoading, error } = useQuery({
     queryKey: ["comments"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -18,6 +18,7 @@ const Feed = () => {
           image_url,
           created_at,
           event_id,
+          nickname,
           event:events (
             name
           ),
@@ -29,8 +30,10 @@ const Feed = () => {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      return data;
+      return data || [];
     },
+    refetchInterval: 5000,
+    refetchOnWindowFocus: true,
   });
 
   return (
