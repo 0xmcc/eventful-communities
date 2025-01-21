@@ -5,6 +5,16 @@ import { Tables } from "@/integrations/supabase/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
 
+interface Organizer {
+  avatar_url?: string;
+  name?: string;
+}
+
+interface Event {
+  organizer?: Organizer;
+  // ... other event properties
+}
+
 interface EventCardProps {
   event: Tables<"events"> & {
     creator: Tables<"profiles">
@@ -18,6 +28,9 @@ const EventCard = ({ event }: EventCardProps) => {
     console.log('Navigating to:', `/events/${event.id}`);
     navigate(`/events/${event.id}`);
   };
+
+  const organizerAvatar = event.creator?.avatar_url || '/default-avatar.png';
+  const organizerName = event.creator?.full_name || event.creator?.username || 'Organizer';
 
   return (
     <Card 
@@ -42,13 +55,13 @@ const EventCard = ({ event }: EventCardProps) => {
           {/* Host Info */}
           <div className="flex items-center gap-2">
             <Avatar className="w-6 h-6">
-              <AvatarImage src={event.creator.avatar_url || undefined} />
+              <AvatarImage src={organizerAvatar} />
               <AvatarFallback>
-                {event.creator.full_name?.charAt(0) || event.creator.username?.charAt(0)}
+                {organizerName.charAt(0)}
               </AvatarFallback>
             </Avatar>
             <span className="text-sm text-secondary-foreground/80 event-card-text-color">
-              {event.creator.full_name || event.creator.username}
+              {organizerName}
             </span>
           </div>
 

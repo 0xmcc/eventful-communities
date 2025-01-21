@@ -44,7 +44,7 @@ const MobileEventSheet = () => {
   const eventCount = events?.length || 0;
 
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button 
           className="mobile-sheet-trigger fixed bottom-0 left-0 right-0 z-90 gap-2 group h-14 rounded-none events-container-bg-background rounded-t-xl"
@@ -69,7 +69,7 @@ const MobileEventSheet = () => {
   onTouchEnd={(e) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('ChevronDown touched');
+    console.log('ChevronDown touched', open);
     setOpen(false);
   }}
   role="button"
