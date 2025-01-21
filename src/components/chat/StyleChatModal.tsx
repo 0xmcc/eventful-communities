@@ -8,7 +8,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { MessageSquare, Sparkles, Lamp } from "lucide-react";
+import { MessageSquare, Sparkles, Lamp, Key, ChevronDown } from "lucide-react";
 import { ChatWindow } from "./ChatWindow";
 import { ThemeEditor } from "../theme/ThemeEditor";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -33,6 +33,7 @@ export const StyleChatModal = () => {
   const [open, setOpen] = useState(false);
   const [showTapMe, setShowTapMe] = useState(true);
   const [apiKey, setApiKey] = useState("");
+  const [showApiKeyModal, setShowApiKeyModal] = useState(false);
   
   const { theme, handleStreamingUpdate: updateTheme, applyTheme, resetTheme } = useThemeState();
 
@@ -78,7 +79,9 @@ export const StyleChatModal = () => {
   };
 
   const handleApiKeySave = () => {
+    console.log('API key saved:', apiKey);
     localStorage.setItem("openai_api_key", apiKey);
+    console.log('API key saved to localStorage:', localStorage.getItem("openai_api_key"));
   };
 
   return (
@@ -108,44 +111,60 @@ export const StyleChatModal = () => {
         </DialogTrigger>
         {/* Dialog Content */}
         {/* if you want, you can go back to chat-container or chat-bg-background */}
-        <DialogContent className="sm:max-w-[800px] message-list">
-          <DialogHeader>
-            <DialogTitle className="chat-title-text">
-              Vently Chat
-              {/* <p className="text-sm text-muted-foreground mt-1">I want to show you how I can transform this page. Ask me to redesign the app's theme - try "Make it look cyberpunk" or "Add more red"</p> */}
-            </DialogTitle>
+        <DialogContent className="sm:max-w-[800px] message-list chat-container flex flex-col max-h-[80vh]">
+          <DialogHeader className="sticky top-0 z-10">
+            <div className="flex items-center gap-2">
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={() => setShowApiKeyModal(!showApiKeyModal)}
+                className="chat-action"
+              >
+                <Key className="h-4 w-4" />
+              </Button>
+              <DialogTitle className="chat-title-text">
+                Vently Chat
+              </DialogTitle>
+            </div>
+            {showApiKeyModal && (
+              <div className="mt-2">
+                <ApiKeyInput 
+                  apiKey={apiKey}
+                  onApiKeyChange={setApiKey}
+                  onSave={handleApiKeySave}
+                />
+              </div>
+            )}
           </DialogHeader>
 
-          {/* Tabs for switching between chat and theme editor */}
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
-            {/* <TabsList>
-              <TabsTrigger value="chat" className="modal-tab-button" >Chat</TabsTrigger>
-              <TabsTrigger value="editor" className="modal-tab-button" >Theme Editor</TabsTrigger>
-            </TabsList> */}
-            {/* Chat Tab */}
-            <TabsContent value="chat">
-              <ApiKeyInput 
-                apiKey={apiKey}
-                onApiKeyChange={setApiKey}
-                onSave={handleApiKeySave}
-              />
-              <ChatWindow
-                messages={messages}
-                input={input}
-                onInputChange={setInput}
-                onSubmit={handleSubmit}
-                isLoading={isLoading}
-              />
-            </TabsContent>
+          {/* Make the tabs container scrollable */}
+          <div className="flex-1 overflow-y-auto">
 
-            {/* Theme Editor Tab */}
-            <TabsContent value="editor">
-              <ThemeEditor 
-                initialContent={theme}
-                onApplyTheme={applyTheme}
-              />
-            </TabsContent>
-          </Tabs>
+            <Tabs value={activeTab} onValueChange={setActiveTab}>
+              {/* <TabsList>
+                <TabsTrigger value="chat" className="modal-tab-button" >Chat</TabsTrigger>
+                <TabsTrigger value="editor" className="modal-tab-button" >Theme Editor</TabsTrigger>
+              </TabsList> */}
+              {/* Chat Tab */}
+              <TabsContent value="chat">
+                <ChatWindow
+                  messages={messages}
+                  input={input}
+                  onInputChange={setInput}
+                  onSubmit={handleSubmit}
+                  isLoading={isLoading}
+                />
+              </TabsContent>
+
+              {/* Theme Editor Tab */}
+              <TabsContent value="editor">
+                <ThemeEditor 
+                  initialContent={theme}
+                  onApplyTheme={applyTheme}
+                />
+              </TabsContent>
+            </Tabs>
+          </div>
         </DialogContent>
       </Dialog>
 

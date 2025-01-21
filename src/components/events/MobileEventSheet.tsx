@@ -58,8 +58,24 @@ const MobileEventSheet = () => {
         side="bottom" 
         className="mobile-sheet h-[80vh] w-full !border-t-0 rounded-t-xl events-container-bg-background [&_button[type='button']]:hidden"
       >
-        <div className="flex items-center justify-center gap-2 mb-4 text-muted-foreground"
-                  onClick={() => setOpen(false)}>
+  <div 
+  className="flex items-center justify-center gap-2 mb-4 text-muted-foreground cursor-pointer hover:text-foreground z-50 pointer-events-auto p-2"
+  onClick={(e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('ChevronDown clicked');
+    setOpen(false);
+  }}
+  onTouchEnd={(e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('ChevronDown touched');
+    setOpen(false);
+  }}
+  role="button"
+  tabIndex={0}
+>
+                    
           <span className="event-count">{eventCount} Events</span>
           <ChevronDown className="w-4 h-4 transition-transform group-hover:-translate-y-0.5" />
         </div>

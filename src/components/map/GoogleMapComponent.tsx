@@ -23,13 +23,17 @@ const GoogleMapComponent = ({ events }: GoogleMapComponentProps) => {
 
   const handleMapClick = (e: google.maps.MapMouseEvent) => {
     console.log('Map clicked:', e.domEvent);
-    // Only close if clicking on the map itself, not on markers or info windows
-    if (e.domEvent.target instanceof HTMLElement) {
-      console.log('Target:', e.domEvent.target);
-      const isMarkerClick = e.domEvent.target.closest('.map-marker') !== null;
-      const isInfoWindowClick = e.domEvent.target.closest('.map-info-window-bg-background') !== null;
+    // Get the clicked element using document.elementFromPoint
+    const clickedElement = document.elementFromPoint(
+      e.domEvent.clientX,
+      e.domEvent.clientY
+    );
+
+    if (clickedElement) {
+      const isInfoWindowClick = clickedElement.closest('.map-info-window-bg-background');
+      const isMarkerClick = clickedElement.closest('.map-marker');
       
-      if (!isMarkerClick && !isInfoWindowClick) {
+      if (!isInfoWindowClick && !isMarkerClick) {
         setSelectedEventId(null);
       }
     }

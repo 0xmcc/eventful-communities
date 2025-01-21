@@ -76,6 +76,9 @@ User Interface Elements:
 - .feed-primary-text: Feed primary text
 - .feed-comment-card-text: Feed comment card text
 - .feed-comment-card-hyperlink: Feed comment card hyperlink
+- .event-marker: Event marker
+- .event-marker-button: Event marker button
+- .event-marker-bg-background: Event marker background
 Important: Feel free to experiment with font families
 Also on buttons, focus on hover states
 For any CSS selectors that have the word 'text' in the name, do not give it a background color

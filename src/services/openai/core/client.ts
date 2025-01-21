@@ -23,7 +23,7 @@ export const makeOpenAIRequest = async ({
 
   const body = prepareRequestBody(prompt, stream, systemPrompt)
 
-  console.log("Making OpenAI request", body);   
+  console.log("Making OpenAI request", body, storedApiKey   );   
   const response = await fetch(API_ENDPOINT, {
     method: "POST",
     headers: {
