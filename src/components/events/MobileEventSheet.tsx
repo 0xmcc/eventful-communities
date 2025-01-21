@@ -56,7 +56,7 @@ const MobileEventSheet = () => {
       </SheetTrigger>
       <SheetContent 
         side="bottom" 
-        className="mobile-sheet h-[80vh] w-full !border-t-0 rounded-t-xl events-container-bg-background [&_button[type='button']]:hidden"
+        className="mobile-sheet h-[80vh] w-full !border-t-0 rounded-t-xl events-container-bg-background [&_button[type='button']]:hidden overflow-hidden"
       >
   <div 
   className="flex items-center justify-center gap-2 mb-4 text-muted-foreground cursor-pointer hover:text-foreground z-50 pointer-events-auto p-2"
@@ -80,7 +80,7 @@ const MobileEventSheet = () => {
           <ChevronDown className="w-4 h-4 transition-transform group-hover:-translate-y-0.5" />
         </div>
   
-        <div className="mobile-sheet-content space-y-4">
+        <div className="mobile-sheet-content space-y-4 h-[calc(80vh-120px)] overflow-y-auto">
           <div className="mobile-sheet-search flex gap-2">
             <Input 
               type="search" 

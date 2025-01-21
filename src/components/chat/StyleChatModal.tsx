@@ -33,7 +33,7 @@ export const StyleChatModal = () => {
   const [open, setOpen] = useState(false);
   const [showTapMe, setShowTapMe] = useState(true);
   const [apiKey, setApiKey] = useState("");
-  const [showApiKeyModal, setShowApiKeyModal] = useState(false);
+  const [showApiKeyModal, setShowApiKeyModal] = useState(true);
   
   const { theme, handleStreamingUpdate: updateTheme, applyTheme, resetTheme } = useThemeState();
 
@@ -82,6 +82,7 @@ export const StyleChatModal = () => {
     console.log('API key saved:', apiKey);
     localStorage.setItem("openai_api_key", apiKey);
     console.log('API key saved to localStorage:', localStorage.getItem("openai_api_key"));
+    setShowApiKeyModal(false);
   };
 
   return (
@@ -123,7 +124,7 @@ export const StyleChatModal = () => {
                 <Key className="h-4 w-4" />
               </Button>
               <DialogTitle className="chat-title-text">
-                Vently Chat
+                Chat
               </DialogTitle>
             </div>
             {showApiKeyModal && (

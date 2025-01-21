@@ -72,7 +72,7 @@ export const ChatWindow = ({
   return (
     <div className="flex h-[500px] flex-col chat-container">
       <div className="flex-1 overflow-y-auto p-4 space-y-4 message-list">
-        <ChatMessage key="welcome" message={WELCOME_MESSAGE} />
+        {/* <ChatMessage key="welcome" message={WELCOME_MESSAGE} /> */}
         {messages.map((message) => (
           <ChatMessage 
             key={message.id} 
